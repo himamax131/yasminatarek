@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+<linearGradient id="g" gradientUnits="userSpaceOnUse" x1="60" y1="60" x2="452" y2="452"><stop offset="0" stop-color="#fbe7b5"/><stop offset=".45" stop-color="#d9a955"/><stop offset="1" stop-color="#8f5f26"/></linearGradient>
+<radialGradient id="bg" cx=".5" cy=".38" r=".8"><stop offset="0" stop-color="#4a1630"/><stop offset=".6" stop-color="#22101a"/><stop offset="1" stop-color="#0b0709"/></radialGradient>
+<radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#d9a955" stop-opacity=".28"/><stop offset="1" stop-color="#d9a955" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="512" height="512" fill="url(#bg)"/>
+<circle cx="256" cy="270" r="170" fill="url(#glow)"/>
+<circle cx="256" cy="256" r="236" fill="none" stroke="url(#g)" stroke-width="5"/>
+<circle cx="256" cy="256" r="222" fill="none" stroke="url(#g)" stroke-width="1.6" opacity=".7"/>
+<!-- jasmine flower -->
+<g transform="translate(256 116)" fill="#f8e6bd">
+<g id="p"><path d="M0 0 C-11 -9 -12 -30 0 -42 C12 -30 11 -9 0 0Z"/></g>
+<use href="#p" transform="rotate(72)"/><use href="#p" transform="rotate(144)"/><use href="#p" transform="rotate(216)"/><use href="#p" transform="rotate(288)"/>
+<circle r="7.5" fill="#22101a"/><circle r="3.6" fill="#fbe7b5"/>
+</g>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M136 206 L196 286 L196 366 M196 286 L256 206 L386 206 M320 206 L320 366" stroke="url(#g)" stroke-width="27"/>
+<path d="M136 206 L196 286 L196 366 M196 286 L256 206 L386 206 M320 206 L320 366" stroke="#22101a" stroke-width="5" opacity=".85"/>
+</g>
+<path d="M150 410 H362" stroke="url(#g)" stroke-width="2"/>
+<path d="M256 401 l8 9 -8 9 -8 -9z" fill="url(#g)"/>
+<circle cx="140" cy="410" r="3" fill="url(#g)"/><circle cx="372" cy="410" r="3" fill="url(#g)"/>
+</svg>

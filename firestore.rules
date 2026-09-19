@@ -2,30 +2,38 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // slots: بيشوفها الكل، بس علشان يعرفوا الميعاد محجوز ولا لأ (من غير أي بيانات شخصية).
-    // ممكن تتعمل مرة واحدة بس، ومحدش يعدّلها أو يمسحها من الموقع (ده بيمنع الحجز المزدوج).
+    // slots: الكل بيشوفها علشان يعرفوا الميعاد محجوز ولا لأ (من غير أي بيانات شخصية).
+    // bid = رقم الحجز المرتبط بيها (علشان الأدمن يقدر يلغي / يعدّل الحجز).
     match /slots/{slotId} {
       allow read: if true;
-      allow create: if request.resource.data.keys().hasOnly(['d', 'h'])
+      allow create: if request.resource.data.keys().hasOnly(['d', 'h', 'bid'])
                     && request.resource.data.d is string
                     && request.resource.data.h is string
                     && request.resource.data.d.size() == 10
                     && request.resource.data.h.size() == 4
-                    && slotId == request.resource.data.d + '_' + request.resource.data.h;
-      allow update, delete: if false;
+                    && slotId == request.resource.data.d + '_' + request.resource.data.h
+                    && (!('bid' in request.resource.data) || request.resource.data.bid is string);
+      allow update: if false;
+      // مطلوب علشان زرار "إلغاء الحجز" / "تعديل الحجز" يشتغل من الموقع
+      allow delete: if true;
     }
 
     // bookings: أي حد يقدر يبعت حجز، بس محدش يقدر يقرأ. إنتي بتشوفيها من Firebase Console.
     match /bookings/{bookingId} {
-      allow create: if request.resource.data.keys().hasOnly(['name', 'phone', 'service', 'd', 'h', 'notes', 'deposit', 'at'])
+      allow create: if request.resource.data.keys().hasOnly(['name', 'phone', 'service', 'd', 'h', 'time', 'locationType', 'address', 'notes', 'deposit', 'paymentNumber', 'at'])
                     && request.resource.data.name is string && request.resource.data.name.size() <= 80
                     && request.resource.data.phone is string && request.resource.data.phone.size() <= 20
                     && request.resource.data.service is string && request.resource.data.service.size() <= 80
                     && request.resource.data.notes is string && request.resource.data.notes.size() <= 300
+                    && request.resource.data.address is string && request.resource.data.address.size() <= 350
                     && request.resource.data.at == request.time
                     // لازم الميعاد يتحجز في نفس العملية
                     && existsAfter(/databases/$(database)/documents/slots/$(request.resource.data.d + '_' + request.resource.data.h));
-      allow read, update, delete: if false;
+      allow read: if false;
+      // تعديل الحجز: مسموح تغيير اليوم / الساعة / الخدمة بس
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['d', 'h', 'time', 'service'])
+                    && existsAfter(/databases/$(database)/documents/slots/$(request.resource.data.d + '_' + request.resource.data.h));
+      allow delete: if true;
     }
   }
 }
