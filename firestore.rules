@@ -2,6 +2,12 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // الأدمن = حساب Firebase Authentication بالإيميل ده (شوفي README)
+    function isAdmin() {
+      return request.auth != null
+          && request.auth.token.email == 'admin@yasmina-tarek.app';
+    }
+
     // slots: الكل بيشوفها علشان يعرفوا الميعاد محجوز ولا لأ (من غير أي بيانات شخصية).
     // bid = رقم الحجز المرتبط بيها (علشان الأدمن يقدر يلغي / يعدّل الحجز).
     match /slots/{slotId} {
@@ -14,11 +20,10 @@ service cloud.firestore {
                     && slotId == request.resource.data.d + '_' + request.resource.data.h
                     && (!('bid' in request.resource.data) || request.resource.data.bid is string);
       allow update: if false;
-      // مطلوب علشان زرار "إلغاء الحجز" / "تعديل الحجز" يشتغل من الموقع
-      allow delete: if true;
+      allow delete: if isAdmin();   // إلغاء / نقل الحجز: للأدمن بس
     }
 
-    // bookings: أي حد يقدر يبعت حجز، بس محدش يقدر يقرأ. إنتي بتشوفيها من Firebase Console.
+    // bookings: أي حد يقدر يبعت حجز، بس القراءة والتعديل والحذف للأدمن بس.
     match /bookings/{bookingId} {
       allow create: if request.resource.data.keys().hasOnly(['name', 'phone', 'service', 'd', 'h', 'time', 'locationType', 'address', 'notes', 'deposit', 'paymentNumber', 'at'])
                     && request.resource.data.name is string && request.resource.data.name.size() <= 80
@@ -29,11 +34,11 @@ service cloud.firestore {
                     && request.resource.data.at == request.time
                     // لازم الميعاد يتحجز في نفس العملية
                     && existsAfter(/databases/$(database)/documents/slots/$(request.resource.data.d + '_' + request.resource.data.h));
-      allow read: if false;
-      // تعديل الحجز: مسموح تغيير اليوم / الساعة / الخدمة بس
-      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['d', 'h', 'time', 'service'])
+      allow read: if isAdmin();     // عرض حجوزات الشهور
+      allow update: if isAdmin()
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['d', 'h', 'time', 'service'])
                     && existsAfter(/databases/$(database)/documents/slots/$(request.resource.data.d + '_' + request.resource.data.h));
-      allow delete: if true;
+      allow delete: if isAdmin();
     }
   }
 }
