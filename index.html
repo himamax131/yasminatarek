@@ -333,6 +333,16 @@ html[dir=ltr] input[dir=ltr]{text-align:left}
 .pay-icon{flex:none;width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,var(--acc-l),var(--acc-d));color:#fff;display:grid;place-items:center;font-weight:800;font-family:var(--lat)}
 .payment-box{border:1px solid var(--line);background:#fff;border-radius:18px;padding:14px;margin-top:11px}
 .payment-box .p-top{display:flex;align-items:center;gap:11px}
+.deposit-warning{margin:12px 0 14px;padding:12px 14px;border-radius:14px;background:rgba(210,75,94,.08);border:1px solid rgba(210,75,94,.22);color:var(--ink);font-family:var(--body);font-size:14px;font-weight:400;line-height:1.8;text-align:right}
+.deposit-warning strong{font-weight:600;color:var(--danger)}
+.notice-modal{position:fixed;inset:0;z-index:260;display:grid;place-items:center;padding:18px}
+.notice-modal[hidden]{display:none!important}
+.notice-back{position:absolute;inset:0;background:rgba(var(--ir),.35);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+.notice-card{position:relative;width:min(500px,100%);background:linear-gradient(160deg,#fff,var(--bg));border:1px solid var(--line2);border-radius:24px;padding:28px 24px 22px;box-shadow:0 30px 70px -20px rgba(var(--ir),.5);text-align:center;animation:mpop .45s var(--ease);font-family:var(--body)}
+.notice-icon{width:58px;height:58px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;background:rgba(210,75,94,.1);color:var(--danger);font-size:28px}
+.notice-card h3{margin:0 0 10px;font-family:var(--body);font-size:22px;font-weight:600;color:var(--ink)}
+.notice-card p{margin:0;color:var(--muted);font-size:15px;font-weight:400;line-height:1.9}
+.notice-close{margin-top:18px;width:100%;border:0;border-radius:999px;padding:12px 18px;background:linear-gradient(135deg,var(--acc-l),var(--acc-d));color:#fff;font-family:var(--body);font-size:16px;font-weight:600;cursor:pointer}
 .payment-box strong{font-size:16px}
 .payment-number{direction:ltr;text-align:left;font-family:var(--lat);font-size:21px;font-weight:700;letter-spacing:1px;color:var(--acc-d);margin:6px 0 0}
 html[dir=rtl] .payment-number{text-align:right}
@@ -656,6 +666,7 @@ html[lang=en] .pane h3{font-size:24px}
     <div class="side-card rv" style="--d:.08s">
       <div class="payment-title"><span class="pay-icon">EG</span><h3 data-i="pay_h"></h3></div>
       <p data-i="pay_p"></p>
+      <div class="deposit-warning" role="note"><strong data-i="notice_h"></strong><br><span data-i="deposit_notice"></span></div>
       <div class="payment-box"><div class="p-top"><span class="pay-icon">V</span><strong>Vodafone Cash</strong></div><div class="payment-number" data-pay="vodafone"></div><button class="copy" type="button" data-copy="vodafone"></button></div>
       <div class="payment-box"><div class="p-top"><span class="pay-icon">I</span><strong>InstaPay</strong></div><div class="payment-number" data-pay="instapay"></div><button class="copy" type="button" data-copy="instapay"></button></div>
       <p class="small" data-i="pay_ask"></p>
@@ -671,6 +682,17 @@ html[lang=en] .pane h3{font-size:24px}
   <span data-i="footer"></span><br>
   <a class="btn wa auto fw" data-wa="hello" href="#" target="_blank" rel="noopener" data-i="cta2b"></a>
 </footer>
+
+<!-- Booking deposit notice -->
+<div class="notice-modal" id="depositNotice" role="dialog" aria-modal="true" aria-labelledby="depositNoticeTitle">
+  <div class="notice-back"></div>
+  <div class="notice-card">
+    <div class="notice-icon">!</div>
+    <h3 id="depositNoticeTitle" data-i="notice_h"></h3>
+    <p data-i="notice_p"></p>
+    <button class="notice-close" id="depositNoticeClose" type="button" data-i="notice_ok"></button>
+  </div>
+</div>
 
 <!-- Admin modal: login + manage (cancel / edit) -->
 <div class="modal" id="adminModal" hidden role="dialog" aria-modal="true" aria-labelledby="admTitle">
@@ -813,7 +835,7 @@ ar:{
  done_h:"تم تسجيل الحجز ✨",done_wa:"إرسال التفاصيل على واتساب",again:"حجز ميعاد آخر",
  k_service:"الخدمة",k_day:"اليوم",k_time:"الساعة",k_place:"المكان",k_name:"الاسم",
  side_name:"ياسمين طارق",i1:"🕙 المواعيد",i1v:"10 ص — 7 م",i2:"📅 الحجز",i2v:"أونلاين",i3:"📲 التواصل",i3v:"واتساب",
- pay_h:"تأكيد الحجز بالعربون",pay_p:"بعد اختيار الموعد، حوّلي العربون على فودافون كاش أو InstaPay ثم ابعتي صورة التحويل على واتساب.",pay_ask:"للاستفسار عن الأسعار وقيمة العربون تواصلي معانا على واتساب:",copy:"نسخ الرقم",copied:"تم النسخ ✓",
+ pay_h:"تأكيد الحجز بالعربون",pay_p:"بعد اختيار الموعد، حوّلي العربون على فودافون كاش أو InstaPay ثم ابعتي صورة التحويل على واتساب.",deposit_notice:"تنبيه مهم: عند إلغاء الحجز بعد دفع العربون، لا يتم استرجاع العربون نظرًا لحجز موعد متفق عليه مسبقًا.",notice_h:"تنبيه مهم",notice_p:"عند إلغاء الحجز بعد دفع العربون، لا يتم استرجاع العربون نظرًا لحجز موعد متفق عليه مسبقًا.",notice_ok:"حسنًا، فهمت",pay_ask:"للاستفسار عن الأسعار وقيمة العربون تواصلي معانا على واتساب:",copy:"نسخ الرقم",copied:"تم النسخ ✓",
  footer:"Makeup Artist · حجز المواعيد أونلاين",
  wa_hello:"السلام عليكم، عايزة أستفسر عن الحجز.",wa_price:"السلام عليكم، عايزة أستفسر عن الأسعار والباكدجات.",
  mb_h:"حجوزات الشهور",mb_locked:"شوفي كل الحجوزات في أي شهر. للأدمن فقط.",mb_open:"🔓 فتح بكلمة المرور",mb_lock:"🔒 قفل",mb_empty:"مفيش حجوزات في الشهر ده.",mb_loading:"جاري التحميل...",mb_call:"📞 اتصال",mb_wa:"💬 واتساب",mb_manage:"✏️ تعديل / إلغاء",
@@ -863,7 +885,7 @@ en:{
  done_h:"Booking received ✨",done_wa:"Send details on WhatsApp",again:"Book another appointment",
  k_service:"Service",k_day:"Day",k_time:"Time",k_place:"Location",k_name:"Name",
  side_name:"Yasmina Tarek",i1:"🕙 Hours",i1v:"10 AM — 7 PM",i2:"📅 Booking",i2v:"Online",i3:"📲 Contact",i3v:"WhatsApp",
- pay_h:"Confirm with a deposit",pay_p:"After choosing your slot, transfer the deposit via Vodafone Cash or InstaPay, then send the transfer screenshot on WhatsApp.",pay_ask:"For prices and the deposit amount, message us on WhatsApp:",copy:"Copy number",copied:"Copied ✓",
+ pay_h:"Confirm with a deposit",pay_p:"After choosing your slot, transfer the deposit via Vodafone Cash or InstaPay, then send the transfer screenshot on WhatsApp.",deposit_notice:"Important: If you cancel the booking after paying the deposit, the deposit is non-refundable because the agreed appointment time has been reserved for you.",notice_h:"Important notice",notice_p:"If you cancel the booking after paying the deposit, the deposit is non-refundable because the agreed appointment time has been reserved for you.",notice_ok:"OK, I understand",pay_ask:"For prices and the deposit amount, message us on WhatsApp:",copy:"Copy number",copied:"Copied ✓",
  footer:"Makeup Artist · Online booking",
  wa_hello:"Hello, I'd like to ask about booking.",wa_price:"Hello, I'd like to ask about prices and packages.",
  mb_h:"Monthly bookings",mb_locked:"See every booking in any month. Admin only.",mb_open:"🔓 Unlock with password",mb_lock:"🔒 Lock",mb_empty:"No bookings in this month.",mb_loading:"Loading...",mb_call:"📞 Call",mb_wa:"💬 WhatsApp",mb_manage:"✏️ Edit / Cancel",
@@ -1439,6 +1461,12 @@ const closePal=()=>{pop.hidden=true;pbtn.setAttribute("aria-expanded","false")};
 pbtn.onclick=e=>{e.stopPropagation();const open=pop.hidden;pop.hidden=!open;pbtn.setAttribute("aria-expanded",String(open))};
 document.addEventListener("click",e=>{if(!pop.hidden&&!e.target.closest(".pal-pop"))closePal()});
 document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(!modal.hidden)closeAdmin();closePal()});
+
+/* ---------- Deposit notice ---------- */
+const depositNotice=$("#depositNotice"),depositNoticeClose=$("#depositNoticeClose");
+const closeDepositNotice=()=>{depositNotice.hidden=true;document.body.classList.remove("lock")};
+depositNoticeClose.onclick=closeDepositNotice;
+depositNotice.querySelector(".notice-back").onclick=closeDepositNotice;
 
 /* ---------- Init ---------- */
 buildPalette();applyCustomLogo();
