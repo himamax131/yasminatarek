@@ -188,6 +188,33 @@ main{max-width:1250px;margin:auto;padding:0 22px}
 .how b{display:grid;place-items:center;width:38px;height:38px;margin:0 auto 8px;border-radius:50%;background:var(--acc);color:#fff;font-family:var(--lat);font-size:16px}
 .how span{font-weight:600}
 
+/* ---------- style finder quiz ---------- */
+.finder-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:30px 28px;box-shadow:var(--shadow);max-width:760px;margin:0 auto}
+.finder-steps{display:flex;justify-content:center;gap:8px;margin-bottom:22px}
+.finder-dot{width:8px;height:8px;border-radius:5px;background:rgba(var(--a),.22);transition:.35s var(--ease)}
+.finder-dot.on{background:var(--acc);width:24px}
+.finder-q{font-family:var(--display);font-weight:700;font-size:21px;text-align:center;margin:0 0 20px;color:var(--ink)}
+.finder-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.finder-opt{border:1px solid var(--line);background:#fff;border-radius:18px;padding:18px 12px;text-align:center;font-weight:700;font-size:15px;color:var(--ink);transition:.3s var(--ease);display:flex;flex-direction:column;align-items:center;gap:8px}
+.finder-opt .ic{font-size:25px;line-height:1}
+.finder-opt:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:0 12px 24px -16px rgba(var(--a),.7)}
+.finder-opt[aria-pressed=true]{background:linear-gradient(135deg,var(--acc-l),var(--acc-d));color:#fff;border-color:transparent;box-shadow:0 14px 28px -14px rgba(var(--a),.85)}
+.finder-nav{display:flex;justify-content:center;margin-top:22px}
+.finder-nav .btn{width:auto;padding:12px 28px}
+.finder-result{text-align:center;animation:fadeUp .6s var(--ease)}
+.finder-ico{font-size:40px;line-height:1;animation:tickIn .7s var(--ease)}
+.finder-result-small{font-family:var(--lat);letter-spacing:5px;font-size:11.5px;color:var(--acc);margin:10px 0 2px}
+.finder-result h3{font-family:var(--display);font-weight:700;font-size:25px;margin:0 0 8px;color:var(--ink)}
+.finder-result .svc{font-family:var(--display);font-weight:700;font-size:21px;color:var(--acc-d);margin:0 0 4px}
+.finder-result .tier-note{max-width:480px;margin:12px auto 0;text-align:center}
+.finder-actions{display:flex;flex-direction:column;gap:10px;max-width:340px;margin:22px auto 0}
+.finder-actions .btn{padding:13px 20px;font-size:16px}
+@media(max-width:680px){
+  .finder-card{padding:24px 16px}
+  .finder-q{font-size:19px}
+  .finder-opts{grid-template-columns:repeat(2,1fr)}
+}
+
 /* ---------- layout ---------- */
 .layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(320px,.72fr);gap:26px;align-items:start}
 .form-column,.side-column{min-width:0}
@@ -389,6 +416,12 @@ html[dir=rtl] .payment-number{text-align:right}
 .footer .badge{width:78px;height:78px;margin:0 auto 10px}
 .footer strong{font-family:var(--body);font-size:24px;font-weight:800;color:var(--acc-d);display:block;line-height:1.3}
 .footer .fw{display:inline-flex;margin-top:14px}
+.util-row{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.util-row .tool{background:#fff}
+
+/* ---------- availability pill ---------- */
+.avail-pill{display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:999px;background:rgba(var(--h),.18);border:1px solid rgba(var(--h),.55);color:var(--ink);font-weight:700;font-size:13.5px;margin-bottom:16px}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none;animation:ping 3s infinite}
 
 /* ---------- social media ---------- */
 .foot-social{margin:18px 0 6px;display:flex;flex-direction:column;align-items:center;gap:10px}
@@ -576,6 +609,7 @@ html[lang=en] .pane h3{font-size:24px}
   <div class="hero-inner">
     <div class="hero-copy">
       <div class="eyebrow rv">YASMINA TAREK · YT · MAKEUP ARTIST</div>
+      <div class="avail-pill rv" id="availPill" style="--d:.05s" hidden><span class="pulse-dot"></span><span id="availText"></span></div>
       <h1 class="rv" style="--d:.1s"><span class="shine" data-i="h1b"></span></h1>
       <p class="lead rv" style="--d:.2s" data-i="lead"></p>
       <div class="hero-actions rv" style="--d:.3s">
@@ -598,6 +632,50 @@ html[lang=en] .pane h3{font-size:24px}
 </section>
 
 <main>
+  <!-- Style Finder: quick quiz to recommend a package -->
+  <section class="sec" id="finder-sec">
+    <div class="sec-title rv"><small data-i="finder_small"></small><h2 data-i="finder_h"></h2><p data-i="finder_p"></p><div class="orn">✦</div></div>
+    <div class="finder-card rv">
+      <div class="finder-steps" id="fdDots"></div>
+
+      <div class="fd-panel" id="fdOccasion">
+        <p class="finder-q" data-i="finder_q1"></p>
+        <div class="finder-opts" id="fdOccasionOpts"></div>
+      </div>
+
+      <div class="fd-panel" id="fdTier" hidden>
+        <p class="finder-q" data-i="finder_q2_tier"></p>
+        <div class="finder-opts" id="fdTierOpts"></div>
+        <div class="finder-nav"><button class="btn ghost" type="button" id="fdBack1" data-i="finder_back"></button></div>
+      </div>
+
+      <div class="fd-panel" id="fdHair" hidden>
+        <p class="finder-q" data-i="finder_q2_hair"></p>
+        <div class="finder-opts" id="fdHairOpts"></div>
+        <div class="finder-nav"><button class="btn ghost" type="button" id="fdBack2" data-i="finder_back"></button></div>
+      </div>
+
+      <div class="fd-panel" id="fdPlace" hidden>
+        <p class="finder-q" data-i="finder_q3"></p>
+        <div class="finder-opts" id="fdPlaceOpts"></div>
+        <div class="finder-nav"><button class="btn ghost" type="button" id="fdBack3" data-i="finder_back"></button></div>
+      </div>
+
+      <div class="fd-panel finder-result" id="fdResult" hidden>
+        <div class="finder-ico">🎯</div>
+        <p class="finder-result-small" data-i="finder_result_small"></p>
+        <h3 data-i="finder_result_h"></h3>
+        <p class="svc" id="fdSvcName"></p>
+        <p class="tier-note" id="fdNote" hidden></p>
+        <div class="finder-actions">
+          <button class="btn" id="fdBook" type="button" data-i="finder_book"></button>
+          <a class="btn wa" id="fdWa" href="#" target="_blank" rel="noopener" data-i="finder_ask"></a>
+          <button class="btn ghost" id="fdRetake" type="button" data-i="finder_retake"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Services -->
   <section class="sec" id="services-sec">
     <div class="sec-title rv"><small data-i="sv_small"></small><h2 data-i="sv_h"></h2><p data-i="sv_p"></p><div class="orn">✦</div></div>
@@ -724,6 +802,10 @@ html[lang=en] .pane h3{font-size:24px}
     </div>
   </div>
   <a class="btn wa auto fw" data-wa="hello" href="#" target="_blank" rel="noopener" data-i="cta2b"></a>
+  <div class="util-row">
+    <button class="tool" id="shareBtn" type="button"><span class="tool-ico">🔗</span><span data-i="share_btn"></span></button>
+    <button class="tool" id="installBtn" type="button" hidden><span class="tool-ico">📲</span><span data-i="install_btn"></span></button>
+  </div>
 </footer>
 
 <!-- Social media: floating quick-access, shown after the site opens -->
@@ -871,6 +953,10 @@ ar:{
  h1b:"ياسمين طارق",
  pre_name:"ياسمين طارق",pre_welcome:"مرحبًا بك ✨",
  follow_us:"تابعونا على",soc_toggle:"تابعينا على السوشيال ميديا",
+ avail_some:n=>n===1?"مكان واحد متاح الأسبوع ده":n===2?"مكانين متاحين الأسبوع ده":`${n} أماكن متاحة الأسبوع ده`,
+ avail_open:"الحجز مفتوح لأي يوم في السنة ✨",
+ share_btn:"مشاركة الموقع",install_btn:"تثبيت الموقع كتطبيق",
+ share_text:"احجزي ميعادك مع ياسمين طارق أونلاين ✨",link_copied:"تم نسخ رابط الموقع ✓",
  lead:"ميكب آرتيست ياسمين طارق — اختاري الباكدج واليوم والساعة ومكان المناسبة، وأكدي حجزك في دقايق.",
  cta1:"احجزي ميعادك ✦",cta2:"💬 اسألي عن الأسعار",cta2b:"💬 تواصلي معانا على واتساب",
  f1:"🕙 10 ص — 7 م",f2:"✨ حجز في دقايق",f3:"💬 تأكيد على واتساب",
@@ -884,6 +970,11 @@ ar:{
  cmp_note:"الفرق بين العادي وVIP متاح في باكدجات سواريه وخطوبة وكتب كتاب وحنة.",
  note_reg:"الباكدج العادي: خامات ميك أب احترافية بجودة عالية.",note_vip:"باكدج VIP: خامات فاخرة من ماركات عالمية راقية (High-End).",
  how_h:"خطوات الحجز",how1:"اختاري الباكدج",how2:"حددي اليوم والساعة",how3:"حوّلي العربون وابعتي صورة التحويل",
+ finder_small:"FIND YOUR MATCH",finder_h:"دليل اختيار الباكدج",finder_p:"جاوبي على 3 أسئلة بسيطة ونرشحلك الباكدج المناسب في ثواني",
+ finder_q1:"إيه المناسبة؟",finder_q2_tier:"تحبي الخامات تبقى عادي ولا VIP؟",finder_q2_hair:"عايزة أنهي ستايل؟",finder_q3:"هيتنفذ فين؟",
+ finder_back:"السابق",finder_result_small:"الترشيح ليكي",finder_result_h:"الباكدج المناسب ليكي هو",
+ finder_book:"احجزي الباكدج ده ✦",finder_ask:"💬 اسألي عليه على واتساب",finder_retake:"جرّبي تاني",
+ wa_finder:(svc,place)=>`السلام عليكم، عملت اختبار اختيار الباكدج على الموقع ونتيجتي: ${svc}${place?` (${place})`:""}. حابة أستفسر وأحجز.`,
  sec_h2:"احجزي ميعادك",
  s1t:"نوع الخدمة",s1p:"اختاري الباكدج أو التسريحة المناسبة ليكي",g_pkg:"الباكدجات",g_hair:"الحجاب والتسريحات",
  s2t:"اختاري اليوم",s2p:"أي يوم في السنة — اسحبي بين الشهور واضغطي على اليوم",
@@ -927,6 +1018,10 @@ en:{
  h1b:"Yasmina Tarek",
  pre_name:"Yasmina Tarek",pre_welcome:"Welcome ✨",
  follow_us:"Follow us on",soc_toggle:"Follow us on social media",
+ avail_some:n=>n===1?"1 slot available this week":`${n} slots available this week`,
+ avail_open:"Booking is open for any day of the year ✨",
+ share_btn:"Share the site",install_btn:"Install as an app",
+ share_text:"Book your appointment with Yasmina Tarek online ✨",link_copied:"Link copied ✓",
  lead:"Makeup artist Yasmina Tarek — pick your package, day, time and location, and confirm your booking in minutes.",
  cta1:"Book your slot ✦",cta2:"💬 Ask about prices",cta2b:"💬 Chat with us on WhatsApp",
  f1:"🕙 10 AM — 7 PM",f2:"✨ Booked in minutes",f3:"💬 Confirmed on WhatsApp",
@@ -940,6 +1035,11 @@ en:{
  cmp_note:"Regular vs VIP is available for the Soirée, Engagement, Katb Ketab and Henna packages.",
  note_reg:"Regular package: high-quality professional makeup products.",note_vip:"VIP package: luxury products from premium international brands (High-End).",
  how_h:"How to book",how1:"Choose your package",how2:"Pick the day and time",how3:"Send the deposit and the transfer screenshot",
+ finder_small:"FIND YOUR MATCH",finder_h:"Find your package",finder_p:"Answer 3 quick questions and we'll match you with the right package",
+ finder_q1:"What's the occasion?",finder_q2_tier:"Regular or VIP materials?",finder_q2_hair:"Which style would you like?",finder_q3:"Where will it take place?",
+ finder_back:"Back",finder_result_small:"YOUR MATCH",finder_result_h:"Your recommended package is",
+ finder_book:"Book this package ✦",finder_ask:"💬 Ask about it on WhatsApp",finder_retake:"Try again",
+ wa_finder:(svc,place)=>`Hello, I took the package finder quiz on the site and got: ${svc}${place?` (${place})`:""}. I'd like to ask and book.`,
  sec_h2:"Book your appointment",
  s1t:"Service",s1p:"Pick the package or style that suits you",g_pkg:"Packages",g_hair:"Hijab & hair styles",
  s2t:"Pick a day",s2p:"Any day of the year — browse the months and tap a day",
@@ -1447,6 +1547,105 @@ $("#mbNextY").onclick=()=>{panel.year++;loadYear()};
 let panelT;
 function schedulePanelReload(){if(!panel.unlocked)return;clearTimeout(panelT);panelT=setTimeout(loadYear,500)}
 
+/* ---------- Style Finder quiz ---------- */
+const finder={history:[],stage:"occasion",occasion:"",tier:"",hairSvc:"",place:"",resultSvc:""};
+function fdSteps(){
+ if(!finder.occasion)return["occasion","?","place"];
+ if(finder.occasion==="bridal")return["occasion","place"];
+ if(finder.occasion==="hair")return["occasion","hairstyle","place"];
+ return["occasion","tier","place"];
+}
+function fdGoTo(stage){finder.history.push(finder.stage);finder.stage=stage;renderFinder()}
+function fdBack(){finder.stage=finder.history.pop()||"occasion";renderFinder()}
+function fdSelectOccasion(id){finder.occasion=id;finder.history=[];fdGoTo(id==="bridal"?"place":id==="hair"?"hairstyle":"tier")}
+function fdSelectTier(v){finder.tier=v;fdGoTo("place")}
+function fdSelectHair(ar){finder.hairSvc=ar;fdGoTo("place")}
+function fdSelectPlace(v){
+ finder.place=v;
+ finder.resultSvc=finder.occasion==="bridal"?CONFIG.services.find(s=>s.fam==="bridal").ar
+  :finder.occasion==="hair"?finder.hairSvc
+  :CONFIG.services.find(s=>s.fam===finder.occasion&&s.tier===finder.tier).ar;
+ fdGoTo("result");confetti();
+}
+function fdReset(){Object.assign(finder,{history:[],stage:"occasion",occasion:"",tier:"",hairSvc:"",place:"",resultSvc:""});renderFinder()}
+
+function fdOptButton(active,html,onclick){
+ const b=document.createElement("button");b.type="button";b.className="finder-opt";b.setAttribute("aria-pressed",String(active));b.innerHTML=html;b.onclick=onclick;return b;
+}
+function renderFdOccasionOpts(){
+ const box=$("#fdOccasionOpts");box.textContent="";
+ CONFIG.families.forEach(f=>box.append(fdOptButton(finder.occasion===f.id,`<span class="ic">${f.ico}</span><span>${f[LANG]}</span>`,()=>fdSelectOccasion(f.id))));
+}
+function renderFdTierOpts(){
+ const box=$("#fdTierOpts");box.textContent="";
+ box.append(fdOptButton(finder.tier==="reg",`<span class="ic">🤍</span><span>${t("reg_lbl")}</span>`,()=>fdSelectTier("reg")));
+ box.append(fdOptButton(finder.tier==="vip",`<span class="ic">💎</span><span>VIP</span>`,()=>fdSelectTier("vip")));
+}
+function renderFdHairOpts(){
+ const box=$("#fdHairOpts");box.textContent="";
+ CONFIG.services.filter(s=>s.fam==="hair").forEach(s=>box.append(fdOptButton(finder.hairSvc===s.ar,`<span class="ic">🎀</span><span>${s[LANG]}</span>`,()=>fdSelectHair(s.ar))));
+}
+function renderFdPlaceOpts(){
+ const box=$("#fdPlaceOpts");box.textContent="";
+ box.append(fdOptButton(finder.place==="السنتر",`<span>${t("loc_c")}</span>`,()=>fdSelectPlace("السنتر")));
+ box.append(fdOptButton(finder.place==="عنوان منزل",`<span>${t("loc_h")}</span>`,()=>fdSelectPlace("عنوان منزل")));
+}
+function renderFdResult(){
+ if(!finder.resultSvc)return;
+ $("#fdSvcName").textContent=svcLabel(finder.resultSvc);
+ const svc=CONFIG.services.find(s=>s.ar===finder.resultSvc),note=$("#fdNote");
+ if(svc&&svc.tier){note.hidden=false;note.textContent=t(svc.tier==="vip"?"note_vip":"note_reg")}else note.hidden=true;
+ $("#fdWa").href=waLink(t("wa_finder")(svcLabel(finder.resultSvc),finder.place?locLabel(finder.place):""));
+}
+function renderFinder(){
+ const panels={occasion:$("#fdOccasion"),tier:$("#fdTier"),hairstyle:$("#fdHair"),place:$("#fdPlace"),result:$("#fdResult")};
+ Object.entries(panels).forEach(([k,el])=>{el.hidden=k!==finder.stage});
+ const dots=$("#fdDots");dots.hidden=finder.stage==="result";
+ if(!dots.hidden){
+  const steps=fdSteps(),idx=steps.indexOf(finder.stage);dots.textContent="";
+  steps.forEach((s,i)=>{const d=document.createElement("span");d.className="finder-dot"+(i<=idx?" on":"");dots.append(d)});
+ }
+ renderFdOccasionOpts();renderFdTierOpts();renderFdHairOpts();renderFdPlaceOpts();
+ if(finder.stage==="result")renderFdResult();
+}
+$("#fdBack1").onclick=fdBack;$("#fdBack2").onclick=fdBack;$("#fdBack3").onclick=fdBack;
+$("#fdRetake").onclick=fdReset;
+$("#fdBook").onclick=()=>{
+ state.service=finder.resultSvc;state.locationType=finder.place;state.address="";
+ $("#locCenter").checked=finder.place==="السنتر";$("#locHome").checked=finder.place==="عنوان منزل";
+ $("#addressField").hidden=finder.place!=="عنوان منزل";$("#address").value="";
+ renderServices();renderSummary();
+ $("#book").scrollIntoView({behavior:RM?"auto":"smooth"});
+};
+
+/* ---------- Real availability counter (this week) ---------- */
+function updateAvail(){
+ const pill=$("#availPill");if(!pill)return;
+ let n=0;
+ for(let i=0;i<7;i++){const d=new Date(today0);d.setDate(today0.getDate()+i);const info=dayInfo(d);n+=info.free||0}
+ pill.hidden=false;
+ $("#availText").textContent=n>0?t("avail_some")(n):t("avail_open");
+}
+
+/* ---------- Install as app + Share ---------- */
+let deferredPrompt=null;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;const b=$("#installBtn");if(b)b.hidden=false});
+window.addEventListener("appinstalled",()=>{const b=$("#installBtn");if(b)b.hidden=true;deferredPrompt=null});
+const installBtn=$("#installBtn");
+if(installBtn)installBtn.onclick=async()=>{
+ if(!deferredPrompt)return;
+ deferredPrompt.prompt();
+ try{await deferredPrompt.userChoice}catch{}
+ deferredPrompt=null;installBtn.hidden=true;
+};
+const shareBtn=$("#shareBtn");
+if(shareBtn)shareBtn.onclick=async()=>{
+ const data={title:document.title,text:t("share_text"),url:location.href};
+ if(navigator.share){try{await navigator.share(data);return}catch(e){if(e&&e.name==="AbortError")return}}
+ try{await navigator.clipboard.writeText(location.href);toast(t("link_copied"))}
+ catch{toast(location.href)}
+};
+
 /* ---------- Effects (calm) ---------- */
 const PET={a:"#f0c6d2",b:"#ffffff",c:"#e8c9a8"};
 function drawPetal(ctx,p){ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.globalAlpha=p.a;ctx.fillStyle=p.c;ctx.beginPath();ctx.ellipse(0,0,p.s*.5,p.s,0,0,Math.PI*2);ctx.fill();ctx.restore()}
@@ -1527,7 +1726,7 @@ function applyLang(l,save){
  $$("[data-wa]").forEach(a=>a.href=waLink(t(a.dataset.wa==="price"?"wa_price":"wa_hello")));
  $$(".sw-btn").forEach(b=>{const th=THEMES.find(x=>x[0]===b.dataset.id);$(".sw-name",b).textContent=LANG==="ar"?th[1]:th[2]});
  $("#formMsg").textContent="";
- renderFamilies();renderCompare();renderWd();renderServices();renderCal(false);renderRibbon(false);renderPicked();renderTimes();renderSummary();renderPanel();
+ renderFamilies();renderCompare();renderWd();renderServices();renderCal(false);renderRibbon(false);renderPicked();renderTimes();renderSummary();renderPanel();renderFinder();updateAvail();
  if(lastBooking&&!$("#done").hidden)fillDone(lastBooking);
 }
 $("#langBtn").onclick=()=>applyLang(LANG==="ar"?"en":"ar",true);
@@ -1559,7 +1758,7 @@ initPreloader();initReveal();initSparks();initRipple();initScroll();
 store.start(map=>{
  state.booked=map;
  if(!state.busy&&$("#done").hidden&&state.time&&state.dateKey&&map.has(slotId(state.dateKey,state.time))){state.time="";$("#formMsg").textContent=t("taken_now")}
- renderCal(false);renderTimes();renderSummary();
+ renderCal(false);renderTimes();renderSummary();updateAvail();
  if(!modal.hidden&&!$("[data-pane=edit]").hidden)renderEdTimes();
  schedulePanelReload();
 }).catch(()=>{$("#formMsg").textContent=t("load_fail")});
