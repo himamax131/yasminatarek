@@ -480,6 +480,18 @@ a{color:inherit;text-decoration:none}
 /* prevent horizontal overflow */
 html,body{max-width:100vw;overflow-x:hidden}
 img{max-width:100%;height:auto}
+
+/* mobile nav with more items */
+@media(max-width:640px){
+  .mob-nav a{min-width:52px;padding:6px 6px;font-size:9.5px}
+  .mob-nav .ico{font-size:18px}
+  .topbar{align-items:center}
+  .top-title{order:0;width:auto;flex:1;text-align:center;padding-top:0;font-size:15px;color:var(--sage2)}
+  .content{padding-top:8px}
+  /* stack deposit + location always on phone */
+  .form-row-3 .field{width:100%}
+}
+
 </style>
 </head>
 <body>
@@ -749,8 +761,23 @@ img{max-width:100%;height:auto}
 <nav class="mob-nav" id="mobNav" hidden>
   <a href="#" data-nav="home"><span class="ico">🏠</span>الرئيسية</a>
   <a href="#" data-nav="book" class="active"><span class="ico">📅</span>حجز</a>
-  <a href="#" data-nav="adminLogin"><span class="ico">👤</span>أدمن</a>
+  <a href="#" data-nav="booked"><span class="ico">🗓️</span>المحجوز</a>
+  <a href="#" data-nav="finance" id="mobFinance" hidden><span class="ico">💰</span>الحسابات</a>
+  <a href="#" data-nav="clients" id="mobClients" hidden><span class="ico">🕐</span>العملاء</a>
+  <a href="#" data-nav="adminLogin" id="mobAdmin"><span class="ico">👤</span>أدمن</a>
 </nav>
+
+<!-- Admin quick menu (mobile) -->
+<div class="modal-overlay" id="adminMenuModal" hidden>
+  <div class="modal-box" style="max-width:400px">
+    <div class="modal-head"><h2>لوحة الأدمن</h2><button class="modal-close" data-close="adminMenuModal">✕</button></div>
+    <div class="modal-body" style="display:grid;gap:10px">
+      <button type="button" class="btn-gold" style="width:100%;justify-content:center" data-nav="finance">💰 الحسابات والماليات</button>
+      <button type="button" class="btn-outline" style="width:100%;justify-content:center" data-nav="clients">🕐 مواعيد العملاء</button>
+      <button type="button" class="btn-outline" style="width:100%;justify-content:center;color:var(--danger);border-color:#F5C2C7" id="adminLogoutBtn">🚪 تسجيل الخروج</button>
+    </div>
+  </div>
+</div>
 
 <!-- Admin Login -->
 <div class="modal-overlay" id="adminModal" hidden>
@@ -1195,11 +1222,25 @@ $$(".modal-overlay").forEach(m=>m.onclick=e=>{if(e.target===m)closeModal("#"+m.i
 function setAdminUI(on){
   store.adminUnlocked=on;
   ["navClients","navFinance"].forEach(id=>{
-    const el=$("#"+id);el.classList.toggle("locked",!on);
+    const el=$("#"+id);if(!el)return;
+    el.classList.toggle("locked",!on);
     const lock=el.querySelector(".lock");if(lock)lock.textContent=on?"":"🔒";
   });
   $("#guestPill").innerHTML=on?'<span class="dot" style="background:var(--success)"></span> أدمن':'<span class="dot"></span> غير مسجل دخول';
-  $("#navAdminLogin").querySelector("span:last-of-type").textContent=on?"تسجيل خروج":"تسجيل دخول الأدمن";
+  const sideAdm=$("#navAdminLogin");
+  if(sideAdm){
+    const t=sideAdm.querySelector("span:last-of-type");
+    if(t)t.textContent=on?"تسجيل خروج":"تسجيل دخول الأدمن";
+  }
+  // Mobile nav: show finance/clients when logged in
+  const mf=$("#mobFinance"),mc=$("#mobClients"),ma=$("#mobAdmin");
+  if(mf)mf.hidden=!on;
+  if(mc)mc.hidden=!on;
+  if(ma){
+    const label=ma.childNodes[ma.childNodes.length-1];
+    // update text node after icon
+    ma.innerHTML=on?'<span class="ico">👤</span>لوحة':'<span class="ico">👤</span>أدمن';
+  }
 }
 
 document.addEventListener("click",e=>{
@@ -1210,15 +1251,21 @@ document.addEventListener("click",e=>{
   if(a==="book"){showApp();return}
   if(a==="booked"){renderBookedDays();openModal("#bookedModal");return}
   if(a==="adminLogin"){
-    if(store.adminUnlocked){setAdminUI(false);toast("تم تسجيل الخروج");return}
+    if(store.adminUnlocked){
+      // Open admin menu instead of logout (logout is inside the menu)
+      openModal("#adminMenuModal");
+      return;
+    }
     openModal("#adminModal");return;
   }
   if(a==="finance"){
     if(!store.adminUnlocked){toast("سجّلي دخول الأدمن أولاً",true);openModal("#adminModal");return}
+    closeModal("#adminMenuModal");
     renderFinance();openModal("#financeModal");return;
   }
   if(a==="clients"){
     if(!store.adminUnlocked){toast("سجّلي دخول الأدمن أولاً",true);openModal("#adminModal");return}
+    closeModal("#adminMenuModal");
     renderClients();openModal("#clientsModal");return;
   }
 });
@@ -1226,9 +1273,25 @@ document.addEventListener("click",e=>{
 $("#adminLoginForm").onsubmit=async e=>{
   e.preventDefault();
   const u=$("#admUser").value.trim().toLowerCase(),p=$("#admPass").value;
+  $("#admErr").textContent="";
   if(u!==CONFIG.admin.user.toLowerCase()||p!==CONFIG.admin.pass){$("#admErr").textContent="بيانات خاطئة";return}
-  await store.adminIn();setAdminUI(true);closeModal("#adminModal");toast("مرحباً بكِ 👋");
+  try{
+    await store.adminIn();
+    setAdminUI(true);
+    closeModal("#adminModal");
+    toast("مرحباً بكِ 👋");
+    // On mobile, open admin menu right away so she can reach accounts
+    if(window.innerWidth<=900) openModal("#adminMenuModal");
+  }catch(err){
+    console.error(err);
+    $("#admErr").textContent="فشل الدخول — راجعي Firebase Authentication";
+  }
 };
+document.getElementById("adminLogoutBtn")?.addEventListener("click",()=>{
+  setAdminUI(false);
+  closeModal("#adminMenuModal");
+  toast("تم تسجيل الخروج");
+});
 
 /* Finance tabs */
 $$("[data-ftab]").forEach(t=>t.onclick=()=>{
