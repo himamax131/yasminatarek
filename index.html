@@ -5,270 +5,615 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ياسمين طارق | حجز ميعاد الميكب</title>
 <meta name="description" content="ياسمين طارق Makeup Artist — احجزي ميعادك أونلاين">
-<meta name="theme-color" content="#FDF0F3">
+<meta name="theme-color" content="#E8F5F0">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-64.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --cream:#FDF0F3; --cream2:#F8E7EB; --cream3:#FFF5F7;
-  --gold:#C97B93; --gold2:#AD5A75; --gold-l:#E8B4C4; --gold-bg:#FCE8EE;
-  --ink:#321D24; --muted:#8A6B74; --line:#EDD5DC;
-  --white:#FFFFFF; --dark:#1A1014; --dark2:#241820; --dark3:#2E2228;
-  --success:#22A06B; --danger:#D24B5E; --radius:18px;
-  --shadow:0 8px 32px -12px rgba(50,29,36,.18);
+  --mint:#E8F5F0; --mint2:#D4EDE3; --mint3:#F4FBF8;
+  --sage:#4A7C6F; --sage2:#3D6B5F; --sage-l:#A8D0C4; --sage-bg:#DFF0EA;
+  --pink:#FDF0F3; --pink2:#F8E7EB; --pink-acc:#C97B93; --pink-d:#AD5A75;
+  --ink:#1E2B28; --muted:#6B7C76; --line:#D0E0DA;
+  --white:#fff; --dark:#14201C; --success:#22A06B; --danger:#D24B5E;
+  --gold:#C4A35A; --radius:18px;
+  --shadow:0 12px 40px -16px rgba(30,43,40,.2);
   --font:"Cairo","Segoe UI",Tahoma,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{font-family:var(--font);background:linear-gradient(160deg,var(--cream) 0%,var(--cream2) 100%);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.6}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--mint);color:var(--ink);min-height:100vh;line-height:1.65;overflow-x:hidden}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
 a{color:inherit;text-decoration:none}
-:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+:focus-visible{outline:2px solid var(--sage);outline-offset:2px}
 [hidden]{display:none!important}
 
-/* Layout */
-.app{display:flex;min-height:100vh;flex-direction:row-reverse}
-.sidebar{
-  width:260px;flex-shrink:0;background:var(--dark);color:#E8DFD0;
-  display:flex;flex-direction:column;padding:0;position:fixed;top:0;right:0;bottom:0;z-index:40;
-  box-shadow:-4px 0 24px rgba(0,0,0,.25);
-}
-.main{flex:1;margin-right:260px;min-height:100vh;display:flex;flex-direction:column}
+/* ===== HERO / HOME ===== */
+.home{background:var(--mint3);position:relative}
+.home-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.home-bg i{position:absolute;border-radius:50%;opacity:.45}
+.home-bg i:nth-child(1){width:120px;height:120px;background:#A8D0C4;top:8%;left:5%;animation:float 14s ease-in-out infinite}
+.home-bg i:nth-child(2){width:50px;height:50px;background:#E8B4C4;top:20%;right:12%;animation:float 10s ease-in-out infinite reverse}
+.home-bg i:nth-child(3){width:70px;height:70px;background:#C9A06A;bottom:40%;left:15%;animation:float 16s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-20px)}}
 
-/* Sidebar */
-.side-brand{padding:28px 22px 20px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center}
-.side-brand .name{font-weight:800;font-size:18px;letter-spacing:1px;color:var(--gold-l);direction:ltr}
-.side-brand .sub{font-size:10px;letter-spacing:3px;color:rgba(232,213,163,.6);margin-top:4px;direction:ltr}
-.side-sec{padding:18px 14px 8px;font-size:11px;color:rgba(232,213,163,.45);letter-spacing:1px}
-.side-nav{display:flex;flex-direction:column;gap:4px;padding:0 12px}
+.hero{
+  position:relative;min-height:92vh;display:grid;grid-template-columns:1fr 1.05fr;gap:48px;align-items:center;
+  max-width:1180px;margin:0 auto;padding:48px 28px 56px;
+}
+.hero-visual{position:relative;display:flex;justify-content:center;align-items:center}
+.hero-visual .glow{position:absolute;width:85%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(168,208,196,.55),transparent 70%);filter:blur(8px)}
+.logo-circle{
+  position:relative;z-index:2;width:min(320px,72vw);aspect-ratio:1;border-radius:50%;
+  background:linear-gradient(150deg,#4A7C6F 0%,#2F5A50 100%);color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:0 32px 64px -24px rgba(47,90,80,.6),0 0 0 14px rgba(168,208,196,.22),0 0 0 28px rgba(168,208,196,.1);
+}
+.logo-circle .ring{position:absolute;inset:-8px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.28)}
+.logo-circle .top{font-size:11px;letter-spacing:4px;opacity:.9;margin-bottom:6px}
+.logo-circle .yt{font-size:68px;font-weight:800;line-height:1;letter-spacing:-2px}
+.logo-circle .flower{font-size:20px;margin:2px 0;opacity:.9}
+.logo-circle .bot{font-size:10px;letter-spacing:3px;opacity:.75;margin-top:6px}
+
+.hero-photo{
+  position:absolute;z-index:1;border-radius:20px;overflow:hidden;box-shadow:0 20px 50px -18px rgba(0,0,0,.3);
+  border:3px solid #fff;
+}
+.hero-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-photo.p1{width:140px;height:180px;top:8%;right:-4%;transform:rotate(6deg)}
+.hero-photo.p2{width:120px;height:150px;bottom:10%;left:-2%;transform:rotate(-8deg)}
+
+.hero-copy .avail-pill{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;
+  background:rgba(255,255,255,.9);border:1px solid var(--line);font-size:13.5px;font-weight:600;
+  color:var(--sage2);margin-bottom:14px;box-shadow:0 4px 14px -4px rgba(0,0,0,.08);
+}
+.avail-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 0 3px rgba(34,160,107,.25)}
+.brand-line{font-size:11.5px;letter-spacing:3.5px;color:var(--muted);margin-bottom:10px;direction:ltr}
+.hero-copy h1{font-size:clamp(38px,5.8vw,58px);font-weight:800;color:var(--sage2);line-height:1.2;margin-bottom:12px}
+.hero-copy .lead{font-size:16.5px;color:var(--muted);max-width:440px;margin-bottom:26px;line-height:1.75}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.btn-solid{
+  display:inline-flex;align-items:center;gap:8px;padding:15px 30px;border-radius:999px;
+  background:linear-gradient(135deg,var(--sage),var(--sage2));color:#fff;font-weight:700;font-size:16px;
+  box-shadow:0 12px 30px -10px rgba(61,107,95,.55);transition:.25s;
+}
+.btn-solid:hover{transform:translateY(-2px);box-shadow:0 16px 36px -10px rgba(61,107,95,.65)}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:8px;padding:14px 26px;border-radius:999px;
+  background:#fff;border:1.5px solid var(--line);font-weight:600;font-size:15px;color:var(--sage2);transition:.2s;
+}
+.btn-ghost:hover{border-color:var(--sage);background:var(--sage-bg)}
+.hero-social{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:14px;color:var(--muted)}
+.hero-social a{width:36px;height:36px;border-radius:50%;background:var(--dark);color:#fff;display:grid;place-items:center;font-size:14px;transition:.2s}
+.hero-social a:hover{transform:scale(1.08)}
+.hero-social a.ig{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)}
+.hero-social a.fb{background:#1877F2}
+.hero-feats{display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;color:var(--muted)}
+.hero-feats span{display:flex;align-items:center;gap:5px}
+
+/* Sections */
+.sec{padding:64px 28px;max-width:1180px;margin:0 auto}
+.sec-head{text-align:center;margin-bottom:36px}
+.sec-head .small{font-size:12px;letter-spacing:4px;color:var(--sage);direction:ltr;margin-bottom:6px;font-weight:600}
+.sec-head h2{font-size:clamp(26px,4vw,36px);font-weight:800;color:var(--ink);margin-bottom:8px}
+.sec-head p{color:var(--muted);max-width:520px;margin:0 auto;font-size:15.5px}
+
+/* Price cards */
+.prices-sec{background:linear-gradient(180deg,var(--mint3),#fff)}
+.price-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+.price-card{
+  background:#fff;border-radius:18px;padding:22px 20px;border:1px solid var(--line);
+  box-shadow:0 10px 30px -16px rgba(30,43,40,.15);transition:.3s;position:relative;overflow:hidden;
+}
+.price-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -16px rgba(30,43,40,.22);border-color:var(--sage-l)}
+.price-card.vip{background:linear-gradient(160deg,#fff 40%,#F0FAF6);border-color:var(--sage-l)}
+.price-card.vip::before{content:"VIP";position:absolute;top:12px;left:12px;font-size:10px;font-weight:800;letter-spacing:1px;background:var(--sage);color:#fff;padding:3px 8px;border-radius:6px}
+.price-card .ico{font-size:28px;margin-bottom:10px}
+.price-card h3{font-size:17px;font-weight:700;margin-bottom:6px;color:var(--ink)}
+.price-card .price{font-size:28px;font-weight:800;color:var(--sage2);margin:8px 0 4px}
+.price-card .price small{font-size:14px;font-weight:600;color:var(--muted)}
+.price-card .note{font-size:12.5px;color:var(--muted)}
+.price-card .book-mini{
+  display:inline-flex;margin-top:14px;padding:8px 16px;border-radius:999px;font-size:13px;font-weight:700;
+  background:var(--sage-bg);color:var(--sage2);border:1px solid var(--sage-l);transition:.2s;
+}
+.price-card .book-mini:hover{background:var(--sage);color:#fff}
+
+.deposit-banner{
+  margin-top:28px;text-align:center;padding:18px 24px;border-radius:16px;
+  background:linear-gradient(135deg,#FFF8E7,#F8F0DC);border:1.5px solid #E8D5A3;font-size:14.5px;
+}
+.deposit-banner strong{color:#8B6914}
+
+/* Gallery */
+.gallery-sec{background:#fff}
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.gallery-grid figure{
+  border-radius:16px;overflow:hidden;aspect-ratio:3/4;position:relative;
+  box-shadow:0 12px 28px -14px rgba(0,0,0,.25);
+}
+.gallery-grid img{width:100%;height:100%;object-fit:cover;display:block;transition:.4s}
+.gallery-grid figure:hover img{transform:scale(1.06)}
+.gallery-grid figcaption{
+  position:absolute;inset-inline:0;bottom:0;padding:12px;background:linear-gradient(transparent,rgba(0,0,0,.65));
+  color:#fff;font-size:13px;font-weight:600;
+}
+
+/* How steps */
+.how-sec{background:var(--mint)}
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.how-card{
+  background:#fff;border-radius:18px;padding:28px 22px;text-align:center;border:1px solid var(--line);
+  box-shadow:0 10px 28px -16px rgba(30,43,40,.12);
+}
+.how-card .num{
+  width:48px;height:48px;border-radius:50%;background:var(--sage);color:#fff;
+  display:grid;place-items:center;font-weight:800;font-size:18px;margin:0 auto 14px;
+}
+.how-card h3{font-size:17px;margin-bottom:6px}
+.how-card p{font-size:14px;color:var(--muted)}
+
+/* CTA band */
+.cta-band{
+  background:linear-gradient(135deg,var(--sage2),var(--sage));color:#fff;text-align:center;
+  padding:56px 28px;border-radius:0;
+}
+.cta-band h2{font-size:clamp(24px,3.5vw,32px);font-weight:800;margin-bottom:10px}
+.cta-band p{opacity:.9;margin-bottom:22px;font-size:15.5px}
+.cta-band .btn-solid{background:#fff;color:var(--sage2);box-shadow:0 10px 28px -10px rgba(0,0,0,.25)}
+.cta-band .btn-solid:hover{background:#F0FAF6}
+
+.home-footer{text-align:center;padding:28px;font-size:13px;color:var(--muted);background:var(--mint3)}
+
+/* ===== APP LAYOUT (booking) ===== */
+.app{display:none;min-height:100vh;flex-direction:row-reverse}
+.app.show{display:flex}
+.sidebar{
+  width:250px;flex-shrink:0;background:var(--dark);color:#E0EDE8;
+  display:flex;flex-direction:column;position:fixed;top:0;right:0;bottom:0;z-index:40;
+}
+.side-brand{padding:24px 18px 16px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center}
+.side-brand .name{font-weight:800;font-size:16px;letter-spacing:1px;color:var(--sage-l);direction:ltr}
+.side-brand .sub{font-size:9px;letter-spacing:2px;color:rgba(168,208,196,.5);margin-top:3px;direction:ltr}
+.side-sec{padding:16px 14px 6px;font-size:11px;color:rgba(168,208,196,.4)}
+.side-nav{display:flex;flex-direction:column;gap:3px;padding:0 10px}
 .side-link{
-  display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;
-  font-size:14.5px;font-weight:500;color:rgba(232,213,163,.75);transition:.2s;
+  display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:11px;
+  font-size:13.5px;font-weight:500;color:rgba(224,237,232,.7);transition:.2s;
 }
 .side-link:hover{background:rgba(255,255,255,.06);color:#fff}
-.side-link.active{background:linear-gradient(135deg,rgba(201,123,147,.25),rgba(201,123,147,.12));color:var(--gold-l);font-weight:700;box-shadow:inset 3px 0 0 var(--gold)}
-.side-link .ico{width:22px;text-align:center;font-size:16px}
-.side-link.locked{opacity:.45}
-.side-link .lock{font-size:12px;margin-inline-start:auto;opacity:.7}
-.side-footer{margin-top:auto;padding:16px;border-top:1px solid rgba(255,255,255,.06);font-size:12px;color:rgba(232,213,163,.4);text-align:center}
-
-/* Top bar */
+.side-link.active{background:rgba(74,124,111,.3);color:var(--sage-l);font-weight:700;box-shadow:inset 3px 0 0 var(--sage-l)}
+.side-link.locked{opacity:.4}
+.side-link .lock{margin-inline-start:auto;font-size:11px}
+.side-footer{margin-top:auto;padding:14px;font-size:11px;color:rgba(168,208,196,.35);text-align:center;border-top:1px solid rgba(255,255,255,.06)}
+.main{flex:1;margin-right:250px;min-height:100vh;background:linear-gradient(160deg,var(--mint3),var(--mint));display:flex;flex-direction:column}
 .topbar{
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:14px 28px;background:rgba(255,255,255,.72);backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 24px;background:rgba(255,255,255,.8);backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30;
 }
-.top-title{font-weight:700;font-size:18px;color:var(--gold2)}
+.top-title{font-weight:700;font-size:17px;color:var(--sage2)}
 .guest-pill{
-  display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;
-  background:var(--cream3);border:1px solid var(--line);font-size:13.5px;font-weight:600;color:var(--muted);
+  display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:999px;
+  background:var(--mint3);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted);
 }
-.guest-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.guest-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.btn-back-home{padding:7px 14px;border-radius:999px;background:var(--sage-bg);color:var(--sage2);font-size:13px;font-weight:600;border:1px solid var(--line)}
+.content{padding:24px 24px 50px;max-width:1080px;width:100%;margin:0 auto}
 
-/* Content */
-.content{padding:28px 28px 60px;max-width:1100px;width:100%;margin:0 auto}
+.card{background:var(--white);border-radius:20px;padding:24px;box-shadow:var(--shadow);border:1px solid rgba(208,224,218,.5)}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:22px}
+.card-head h1{font-size:20px;font-weight:800;display:flex;align-items:center;gap:6px}
+.card-head p{font-size:13px;color:var(--muted);margin-top:3px}
 
-/* Card */
-.card{
-  background:var(--white);border-radius:22px;padding:28px 28px 24px;
-  box-shadow:var(--shadow);border:1px solid rgba(229,220,206,.6);
-}
-.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:28px}
-.card-head h1{font-size:22px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:8px}
-.card-head p{font-size:13.5px;color:var(--muted);margin-top:4px}
-.edit-btn{
-  width:42px;height:42px;border-radius:12px;background:var(--gold-bg);color:var(--gold2);
-  display:grid;place-items:center;font-size:18px;flex-shrink:0;transition:.2s;
-}
-.edit-btn:hover{background:var(--gold);color:#fff}
-
-/* Form grid */
-.form-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}
-.field{display:flex;flex-direction:column;gap:7px}
-.field label{font-size:13px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:6px}
-.field label .ico{font-size:14px}
+.form-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:5px}
 .field input,.field select,.field textarea{
-  height:48px;padding:0 14px;border:1.5px solid var(--line);border-radius:12px;
-  background:var(--cream3);transition:.2s;font-size:14.5px;width:100%;
+  height:46px;padding:0 12px;border:1.5px solid var(--line);border-radius:11px;
+  background:var(--mint3);transition:.2s;font-size:14px;width:100%;
 }
-.field input:focus,.field select:focus,.field textarea:focus{
-  border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(201,123,147,.15);
-}
-.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23C4A35A' stroke-width='2'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 14px center;padding-left:36px}
-.field.highlight input,.field.highlight select{border-color:var(--gold);background:#fff}
-.field textarea{height:auto;min-height:52px;padding:12px 14px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--sage);background:#fff;box-shadow:0 0 0 3px rgba(74,124,111,.12)}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%234A7C6F' stroke-width='2'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 12px center;padding-left:32px}
+.field.highlight select{border-color:var(--sage);background:#fff}
+.field textarea{height:auto;min-height:48px;padding:10px 12px;resize:vertical}
 .field-full{grid-column:1/-1}
-.field .err{font-size:12px;color:var(--danger);min-height:16px}
-.deposit-locked{background:var(--gold-bg)!important;border-color:var(--gold-l)!important;font-weight:700;color:var(--gold2);pointer-events:none}
+.field .err{font-size:11.5px;color:var(--danger);min-height:14px}
+.deposit-locked{background:var(--sage-bg)!important;border-color:var(--sage-l)!important;font-weight:700;color:var(--sage2);pointer-events:none}
 .outdoor-note{
-  display:flex;align-items:flex-start;gap:10px;margin-top:4px;margin-bottom:14px;
-  padding:12px 16px;border-radius:12px;background:#FCE8EE;border:1.5px solid var(--gold-l);
-  font-size:13.5px;color:var(--ink);line-height:1.7;
+  display:flex;align-items:flex-start;gap:8px;margin-bottom:12px;padding:11px 14px;
+  border-radius:11px;background:#FFF8E7;border:1.5px solid #E8D5A3;font-size:13px;line-height:1.6;
 }
-.outdoor-note strong{color:var(--gold2)}
-
-/* Time slots */
-.times-wrap{margin-top:8px}
-.times-grid{display:flex;flex-wrap:wrap;gap:8px}
-.time-btn{
-  padding:10px 16px;border-radius:10px;border:1.5px solid var(--line);background:var(--cream3);
-  font-size:13.5px;font-weight:600;transition:.2s;color:var(--ink);
-}
-.time-btn:hover:not(:disabled){border-color:var(--gold);background:var(--gold-bg)}
-.time-btn.active{background:var(--gold);color:#fff;border-color:var(--gold)}
-.time-btn:disabled{opacity:.35;cursor:not-allowed;text-decoration:line-through}
-
-/* Location */
-.loc-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
-.loc-btn{
-  flex:1;min-width:140px;padding:14px 18px;border-radius:14px;border:1.5px solid var(--line);
-  background:var(--cream3);text-align:center;font-weight:600;font-size:14px;transition:.2s;
-}
-.loc-btn:hover{border-color:var(--gold)}
-.loc-btn.active{background:var(--gold-bg);border-color:var(--gold);color:var(--gold2)}
-
-/* Actions */
-.form-actions{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-top:8px;flex-wrap:wrap}
-.msg{font-size:14px;color:var(--danger);flex:1;text-align:start}
-.btn-gold{
-  display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:14px;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;font-weight:700;font-size:16px;
-  box-shadow:0 8px 24px -8px rgba(173,90,117,.5);transition:.25s;
-}
-.btn-gold:hover{transform:translateY(-1px);box-shadow:0 12px 28px -8px rgba(173,90,117,.6)}
-.btn-gold:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-outline{
-  display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:14px;
-  border:1.5px solid var(--line);background:#fff;font-weight:600;font-size:14px;color:var(--ink);transition:.2s;
-}
-.btn-outline:hover{border-color:var(--gold);color:var(--gold2)}
-
-/* Summary bar */
+.outdoor-note strong{color:#8B6914}
 .sum-bar{
-  display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:16px 20px;margin-bottom:20px;
-  background:var(--gold-bg);border-radius:14px;border:1px solid var(--gold-l);font-size:14px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:12px 16px;margin-bottom:16px;
+  background:var(--sage-bg);border-radius:12px;border:1px solid var(--sage-l);font-size:13.5px;
 }
-.sum-bar strong{color:var(--gold2)}
-.sum-item{display:flex;align-items:center;gap:6px}
+.sum-bar strong{color:var(--sage2)}
+.form-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-top:6px;flex-wrap:wrap}
+.msg{font-size:13.5px;color:var(--danger);flex:1;text-align:start}
+.btn-gold{
+  display:inline-flex;align-items:center;gap:7px;padding:13px 28px;border-radius:12px;
+  background:linear-gradient(135deg,var(--sage),var(--sage2));color:#fff;font-weight:700;font-size:15px;
+  box-shadow:0 8px 22px -8px rgba(61,107,95,.45);transition:.25s;
+}
+.btn-gold:hover{transform:translateY(-1px)}
+.btn-gold:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-outline{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:11px;border:1.5px solid var(--line);background:#fff;font-weight:600;font-size:13.5px;transition:.2s}
+.btn-outline:hover{border-color:var(--sage);color:var(--sage2)}
 
-/* Done screen */
-.done-card{text-align:center;padding:40px 24px}
-.done-card .check{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#22A06B,#1A8A58);color:#fff;display:grid;place-items:center;font-size:36px;margin:0 auto 20px}
-.done-card h2{font-size:24px;margin-bottom:8px}
-.done-card p{color:var(--muted);margin-bottom:20px;max-width:480px;margin-inline:auto}
-.done-after{
-  background:var(--cream3);border:1.5px dashed var(--gold-l);border-radius:14px;padding:18px;
-  text-align:start;margin:20px auto;max-width:520px;font-size:14.5px;line-height:1.8;
-}
-.pay-nums{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:16px 0}
-.pay-chip{
-  display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:12px;
-  background:#fff;border:1.5px solid var(--line);font-weight:600;
-}
-.pay-chip button{padding:4px 12px;border-radius:8px;background:var(--gold-bg);color:var(--gold2);font-size:12px;font-weight:700}
+.done-card{text-align:center;padding:36px 20px}
+.done-card .check{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#22A06B,#1A8A58);color:#fff;display:grid;place-items:center;font-size:32px;margin:0 auto 16px}
+.done-card h2{font-size:22px;margin-bottom:6px}
+.done-card p{color:var(--muted);margin-bottom:16px}
+.done-after{background:var(--mint3);border:1.5px dashed var(--sage-l);border-radius:12px;padding:14px;text-align:start;margin:16px auto;max-width:500px;font-size:14px;line-height:1.75}
+.pay-nums{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.pay-chip{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;background:#fff;border:1.5px solid var(--line);font-weight:600;font-size:13.5px}
+.pay-chip button{padding:3px 10px;border-radius:7px;background:var(--sage-bg);color:var(--sage2);font-size:11.5px;font-weight:700}
 
-/* Toast */
-.toast{
-  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);
-  background:var(--dark);color:#fff;padding:14px 28px;border-radius:14px;font-weight:600;
-  z-index:100;transition:.4s;opacity:0;pointer-events:none;font-size:14.5px;
-}
+.policy-banner{background:linear-gradient(135deg,#FFF8E7,#F8F0DC);border:1px solid #E8D5A3;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:13px;display:flex;gap:8px;align-items:flex-start}
+.policy-banner strong{color:#8B6914}
+.demo-bar{background:#FFF3CF;color:#6B4E00;text-align:center;padding:7px;font-size:12.5px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);color:#fff;padding:12px 24px;border-radius:12px;font-weight:600;z-index:100;transition:.35s;opacity:0;pointer-events:none;font-size:14px}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .toast.bad{background:var(--danger)}
 
-/* Modals */
-.modal-overlay{
-  position:fixed;inset:0;z-index:80;background:rgba(20,17,14,.55);backdrop-filter:blur(6px);
-  display:grid;place-items:center;padding:20px;
-}
-.modal-box{
-  background:var(--white);border-radius:22px;width:min(960px,100%);max-height:90vh;overflow:auto;
-  box-shadow:0 32px 80px -16px rgba(0,0,0,.35);padding:0;
-}
-.modal-head{
-  display:flex;align-items:center;justify-content:space-between;padding:20px 24px;
-  border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:2;border-radius:22px 22px 0 0;
-}
-.modal-head h2{font-size:18px;font-weight:700}
-.modal-close{width:36px;height:36px;border-radius:10px;background:var(--cream3);display:grid;place-items:center;font-size:18px}
-.modal-body{padding:24px}
+.modal-overlay{position:fixed;inset:0;z-index:80;background:rgba(20,32,28,.5);backdrop-filter:blur(5px);display:grid;place-items:center;padding:16px}
+.modal-box{background:var(--white);border-radius:20px;width:min(980px,100%);max-height:92vh;overflow:auto;box-shadow:0 28px 70px -14px rgba(0,0,0,.3)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:2;border-radius:20px 20px 0 0}
+.modal-head h2{font-size:17px;font-weight:700}
+.modal-close{width:34px;height:34px;border-radius:9px;background:var(--mint3);display:grid;place-items:center;font-size:16px}
+.modal-body{padding:20px}
 
-/* Finance stats */
-.fin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
-.fin-stat{background:var(--cream3);border-radius:14px;padding:16px;border:1px solid var(--line)}
-.fin-stat .lbl{font-size:12px;color:var(--muted);margin-bottom:4px}
-.fin-stat .val{font-size:22px;font-weight:800;color:var(--ink)}
+.fin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:20px}
+.fin-stat{background:var(--mint3);border-radius:12px;padding:14px;border:1px solid var(--line)}
+.fin-stat .lbl{font-size:11.5px;color:var(--muted);margin-bottom:3px}
+.fin-stat .val{font-size:20px;font-weight:800}
 .fin-stat.income .val{color:var(--success)}
 .fin-stat.expense .val{color:var(--danger)}
-.fin-table{width:100%;border-collapse:collapse;font-size:13.5px}
-.fin-table th{text-align:start;padding:10px 12px;background:var(--cream3);font-weight:700;border-bottom:2px solid var(--line)}
-.fin-table td{padding:10px 12px;border-bottom:1px solid var(--line)}
-.fin-table tr:hover td{background:var(--cream3)}
-.status-badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.fin-stat.remain .val{color:var(--gold)}
+
+.fin-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.fin-tab{padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;background:var(--mint3);border:1px solid var(--line);color:var(--muted);transition:.2s}
+.fin-tab.active{background:var(--sage);color:#fff;border-color:var(--sage)}
+
+.fin-table{width:100%;border-collapse:collapse;font-size:13px}
+.fin-table th{text-align:start;padding:9px 10px;background:var(--mint3);font-weight:700;border-bottom:2px solid var(--line);white-space:nowrap}
+.fin-table td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.fin-table tr:hover td{background:var(--mint3)}
+.status-badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700}
 .status-badge.pending{background:#FFF3CD;color:#856404}
-.status-badge.received{background:#FCE4EC;color:#AD5A75}
-.status-badge.partial{background:#D1ECF1;color:#0C5460}
-.status-badge.paid{background:#D4EDDA;color:#155724}
+.status-badge.received{background:#D4EDDA;color:#155724}
 .status-badge.done{background:#E8E8E8;color:#555}
-.fin-act{display:flex;gap:6px}
-.fin-act button{padding:5px 10px;border-radius:8px;font-size:12px;font-weight:600;background:var(--cream3);border:1px solid var(--line)}
+.fin-act{display:flex;gap:4px;flex-wrap:wrap}
+.fin-act button{padding:4px 9px;border-radius:7px;font-size:11.5px;font-weight:600;background:var(--mint3);border:1px solid var(--line)}
 .fin-act button.ok{background:#D4EDDA;color:#155724}
+.fin-act button.edit{background:#E7F1FF;color:#0D47A1}
 .fin-act button.danger{background:#F8D7DA;color:#721C24}
 
-/* Login form in modal */
-.login-form{max-width:360px;margin:0 auto;display:grid;gap:14px}
-.login-form input{height:48px;padding:0 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--cream3)}
+.login-form{max-width:340px;margin:0 auto;display:grid;gap:12px}
+.login-form input{height:46px;padding:0 12px;border:1.5px solid var(--line);border-radius:11px;background:var(--mint3)}
 .login-form .err{color:var(--danger);font-size:13px;text-align:center}
 
-/* Policy banner */
-.policy-banner{
-  background:linear-gradient(135deg,#FCE8EE,#FDF0F3);border:1px solid var(--gold-l);
-  border-radius:14px;padding:14px 18px;margin-bottom:20px;font-size:13.5px;color:var(--ink);
-  display:flex;align-items:flex-start;gap:10px;
-}
-.policy-banner strong{color:var(--gold2)}
+.add-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;padding:16px;background:var(--mint3);border-radius:12px;border:1px solid var(--line)}
+.add-form .field-full{grid-column:1/-1}
+.add-form input,.add-form select{height:42px;padding:0 10px;border:1.5px solid var(--line);border-radius:9px;background:#fff;width:100%}
 
-/* Demo bar */
-.demo-bar{background:#FFF3CF;color:#6B4E00;text-align:center;padding:8px;font-size:13px}
+.edit-panel{padding:14px;background:#F0F7FF;border:1.5px solid #B3D4FC;border-radius:12px;margin-bottom:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.edit-panel input{height:40px;padding:0 10px;border:1.5px solid #B3D4FC;border-radius:8px;background:#fff}
+.edit-panel .actions{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end}
 
-/* Responsive */
+/* desktop form variant */
+.form-row-3{grid-template-columns:1fr 1fr 2fr}
+
+/* ===== TABLET ===== */
 @media(max-width:900px){
-  .sidebar{width:72px}
+  .hero{
+    grid-template-columns:1fr;
+    text-align:center;
+    padding:24px 16px 36px;
+    gap:24px;
+    min-height:auto;
+  }
+  .hero-copy .lead{margin-inline:auto;font-size:15px}
+  .hero-actions,.hero-social,.hero-feats{justify-content:center}
+  .hero-photo{display:none}
+  .logo-circle{width:min(240px,68vw)}
+  .logo-circle .yt{font-size:52px}
+  .hero-copy h1{font-size:clamp(28px,8vw,40px)}
+  .sec{padding:40px 16px}
+  .price-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .gallery-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .how-grid{grid-template-columns:1fr;gap:12px}
+  .sidebar{width:64px}
   .side-brand .name,.side-brand .sub,.side-sec,.side-link span:not(.ico),.side-footer,.side-link .lock{display:none}
-  .side-link{justify-content:center;padding:14px}
-  .main{margin-right:72px}
-  .form-row{grid-template-columns:1fr 1fr}
+  .side-link{justify-content:center;padding:12px}
+  .main{margin-right:64px}
+  .form-row,.form-row-3{grid-template-columns:1fr 1fr}
+  .add-form{grid-template-columns:1fr}
+  .fin-stats{grid-template-columns:1fr 1fr}
+  .deposit-banner{font-size:13px;padding:14px 16px}
+  .cta-band{padding:40px 20px}
 }
+
+/* ===== PHONE ===== */
 @media(max-width:640px){
-  .sidebar{display:none}
-  .main{margin-right:0}
-  .form-row{grid-template-columns:1fr}
-  .content{padding:16px 14px 40px}
-  .card{padding:20px 16px}
-  .topbar{padding:12px 16px}
-  .mob-nav{display:flex!important}
+  body{font-size:15px}
+  .sidebar{display:none !important}
+  .main{margin-right:0 !important}
+
+  /* Home */
+  .hero{padding:16px 14px 28px;gap:16px}
+  .logo-circle{width:min(200px,58vw);box-shadow:0 20px 40px -16px rgba(47,90,80,.5),0 0 0 8px rgba(168,208,196,.2),0 0 0 16px rgba(168,208,196,.08)}
+  .logo-circle .yt{font-size:44px}
+  .logo-circle .top,.logo-circle .bot{font-size:9px;letter-spacing:2px}
+  .hero-copy h1{font-size:28px;margin-bottom:8px}
+  .hero-copy .lead{font-size:14px;line-height:1.65;margin-bottom:18px}
+  .avail-pill{font-size:12px;padding:6px 12px;margin-bottom:10px}
+  .brand-line{font-size:10px;letter-spacing:2px}
+  .hero-actions{flex-direction:column;align-items:stretch;gap:10px;margin-bottom:16px}
+  .hero-actions .btn-solid,.hero-actions .btn-ghost{width:100%;justify-content:center;padding:14px 18px;font-size:15px}
+  .hero-feats{gap:8px 12px;font-size:12px;justify-content:center}
+  .hero-social{justify-content:center;margin-bottom:12px}
+
+  .sec{padding:28px 14px}
+  .sec-head{margin-bottom:20px}
+  .sec-head h2{font-size:22px}
+  .sec-head p{font-size:13.5px}
+  .sec-head .small{font-size:11px;letter-spacing:2px}
+
+  .price-grid{grid-template-columns:1fr;gap:12px}
+  .price-card{padding:18px 16px}
+  .price-card .price{font-size:24px}
+  .price-card h3{font-size:15.5px}
+  .price-card .book-mini{width:100%;justify-content:center}
+
+  .gallery-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .gallery-grid figure{border-radius:12px}
+  .gallery-grid figcaption{font-size:11.5px;padding:8px}
+
+  .how-card{padding:20px 16px}
+  .how-card .num{width:40px;height:40px;font-size:16px}
+  .how-card h3{font-size:15.5px}
+  .how-card p{font-size:13px}
+
+  .deposit-banner{font-size:12.5px;padding:12px 14px;margin-top:18px;line-height:1.6}
+  .cta-band{padding:32px 16px}
+  .cta-band h2{font-size:20px}
+  .cta-band p{font-size:13.5px}
+  .cta-band .btn-solid{width:100%;max-width:280px;justify-content:center}
+  .home-footer{padding:18px 14px 24px;font-size:12px}
+
+  /* Booking app */
+  .content{padding:12px 12px 96px}
+  .topbar{padding:10px 12px;gap:8px;flex-wrap:wrap}
+  .top-title{font-size:14px;width:100%;order:3;text-align:center;padding-top:4px}
+  .btn-back-home{padding:6px 10px;font-size:12px}
+  .guest-pill{font-size:11px;padding:5px 10px}
+
+  .card{padding:16px 14px;border-radius:16px}
+  .card-head{margin-bottom:14px}
+  .card-head h1{font-size:17px}
+  .card-head p{font-size:12px}
+
+  .policy-banner{font-size:12px;padding:10px 12px;margin-bottom:12px;line-height:1.55}
+
+  .sum-bar{
+    font-size:12px;gap:6px;padding:10px 12px;margin-bottom:12px;
+    flex-direction:column;align-items:flex-start;
+  }
+
+  .form-row,.form-row-3{grid-template-columns:1fr !important;gap:10px;margin-bottom:10px}
+  .field label{font-size:12px}
+  .field input,.field select,.field textarea{
+    height:48px;font-size:16px;border-radius:12px;padding:0 14px;
+  }
+  .field textarea{min-height:56px;padding:12px 14px}
+  .field .err{font-size:11px}
+
+  .outdoor-note{font-size:12.5px;padding:10px 12px;margin-bottom:10px}
+
+  .form-actions{
+    flex-direction:column-reverse;align-items:stretch;gap:10px;margin-top:8px;
+  }
+  .btn-gold{
+    width:100%;justify-content:center;padding:15px 20px;font-size:15.5px;border-radius:14px;
+  }
+  .msg{text-align:center;font-size:13px}
+
+  .done-card{padding:24px 14px}
+  .done-card .check{width:56px;height:56px;font-size:28px}
+  .done-card h2{font-size:18px}
+  .done-after{font-size:13px;padding:12px;margin:12px 0}
+  .pay-nums{flex-direction:column;align-items:stretch;gap:8px}
+  .pay-chip{justify-content:space-between;font-size:13px;padding:12px 14px}
+  .done-card .btn-gold,.done-card .btn-outline{width:100%;justify-content:center}
+
+  /* Modals */
+  .modal-overlay{padding:0;align-items:flex-end}
+  .modal-box{
+    width:100%;max-height:92vh;border-radius:20px 20px 0 0;
+    margin:0;
+  }
+  .modal-head{padding:14px 16px}
+  .modal-head h2{font-size:15.5px}
+  .modal-body{padding:14px 14px 28px}
+  .fin-stats{grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+  .fin-stat{padding:12px}
+  .fin-stat .val{font-size:15px}
+  .fin-stat .lbl{font-size:10px}
+  .fin-tabs{gap:4px;margin-bottom:12px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+  .fin-tab{padding:8px 12px;font-size:12px;white-space:nowrap;flex-shrink:0}
+  .fin-table{font-size:11.5px}
+  .fin-table th,.fin-table td{padding:8px 6px}
+  .fin-act{flex-direction:column;gap:4px}
+  .fin-act button{width:100%;text-align:center}
+  .edit-panel{grid-template-columns:1fr;padding:12px;gap:8px}
+  .add-form{padding:12px;gap:10px}
+  .login-form input{height:48px;font-size:16px}
+
+  /* Mobile bottom nav */
+  .mob-nav{display:flex !important}
 }
+
 .mob-nav{
   display:none;position:fixed;bottom:0;left:0;right:0;z-index:50;
-  background:var(--dark);padding:8px 12px max(8px,env(safe-area-inset-bottom));
-  justify-content:space-around;border-top:1px solid rgba(255,255,255,.08);
+  background:var(--dark);
+  padding:8px 4px max(10px,env(safe-area-inset-bottom));
+  justify-content:space-around;
+  border-top:1px solid rgba(255,255,255,.08);
+  box-shadow:0 -6px 24px rgba(0,0,0,.25);
 }
 .mob-nav a{
-  display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 12px;
-  color:rgba(232,213,163,.6);font-size:11px;font-weight:600;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 10px;color:rgba(168,208,196,.5);font-size:10.5px;font-weight:600;
+  min-width:60px;border-radius:10px;transition:.2s;
 }
-.mob-nav a.active{color:var(--gold-l)}
+.mob-nav a.active{color:var(--sage-l);background:rgba(74,124,111,.2)}
 .mob-nav .ico{font-size:20px}
+
+/* prevent horizontal overflow */
+html,body{max-width:100vw;overflow-x:hidden}
+img{max-width:100%;height:auto}
 </style>
 </head>
 <body>
 
-<div class="app">
-  <!-- Sidebar -->
+<!-- ========== HOME / HERO ========== -->
+<section class="home" id="homeView">
+  <div class="home-bg"><i></i><i></i><i></i></div>
+
+  <div class="hero">
+    <div class="hero-visual">
+      <div class="glow"></div>
+      <div class="hero-photo p1">
+        <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&q=80" alt="Makeup look" loading="lazy">
+      </div>
+      <div class="logo-circle">
+        <div class="ring"></div>
+        <div class="top">YASMINA TAREK</div>
+        <div class="flower">❀</div>
+        <div class="yt">YT</div>
+        <div class="bot">MAKEUP ARTIST</div>
+      </div>
+      <div class="hero-photo p2">
+        <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80" alt="Bridal makeup" loading="lazy">
+      </div>
+    </div>
+    <div class="hero-copy">
+      <div class="avail-pill"><span class="dot"></span> <span id="availCount">—</span> أماكن متاحة الأسبوع ده</div>
+      <div class="brand-line">YASMINA TAREK · MAKEUP ARTIST</div>
+      <h1>ياسمين طارق</h1>
+      <p class="lead">ميكب آرتست احترافي للمناسبات الخاصة — سواريه، خطوبة، كتب كتاب، حنة، وزفاف. اختاري باكدجك وأكدي حجزك أونلاين في دقايق.</p>
+      <div class="hero-actions">
+        <button class="btn-solid" id="goBookBtn">✦ احجزي ميعادك</button>
+        <a class="btn-ghost" href="#prices">💰 شوفي الأسعار</a>
+      </div>
+      <div class="hero-social">
+        <span>تابعونا على</span>
+        <a href="#" data-soc="tiktok" title="TikTok">♪</a>
+        <a class="ig" href="#" data-soc="instagram" title="Instagram">📷</a>
+        <a class="fb" href="#" data-soc="facebook" title="Facebook">f</a>
+      </div>
+      <div class="hero-feats">
+        <span>🕐 10 ص — 7 م</span>
+        <span>✦ حجز في دقايق</span>
+        <span>💬 تأكيد على واتساب</span>
+        <span>💵 عربون 200 ج فقط</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICES -->
+  <div class="prices-sec" id="prices">
+    <div class="sec">
+      <div class="sec-head">
+        <div class="small">PACKAGES & PRICES</div>
+        <h2>أسعار الباكدجات</h2>
+        <p>أسعار واضحة وشفافة — العربون ثابت 200 جنيه لتأكيد الحجز</p>
+      </div>
+      <div class="price-grid" id="priceGrid"></div>
+      <div class="deposit-banner">
+        ⚠️ <strong>العربون 200 جنيه</strong> غير قابل للاسترجاع بعد الدفع · باقي المبلغ يوم الموعد · مصاريف Out Door حسب العنوان
+      </div>
+      <div style="text-align:center;margin-top:28px">
+        <button class="btn-solid" id="goBookBtn2">✦ احجزي ميعادك الآن</button>
+        <a class="btn-ghost" id="waPriceBtn" href="#" target="_blank" rel="noopener" style="margin-inline-start:10px">💬 اسألي على واتساب</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="gallery-sec">
+    <div class="sec">
+      <div class="sec-head">
+        <div class="small">PORTFOLIO</div>
+        <h2>من أعمال ياسمين</h2>
+        <p>لمسات ناعمة وثابتة تناسب كل مناسبة</p>
+      </div>
+      <div class="gallery-grid">
+        <figure>
+          <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500&q=80" alt="Evening look" loading="lazy">
+          <figcaption>سواريه</figcaption>
+        </figure>
+        <figure>
+          <img src="https://images.unsplash.com/photo-1457972729786-4857e5a35b6e?w=500&q=80" alt="Engagement" loading="lazy">
+          <figcaption>خطوبة</figcaption>
+        </figure>
+        <figure>
+          <img src="https://images.unsplash.com/photo-1597223557154-721c1cecc4b0?w=500&q=80" alt="Bridal" loading="lazy">
+          <figcaption>زفاف</figcaption>
+        </figure>
+        <figure>
+          <img src="https://images.unsplash.com/photo-1515688594390-b649813dc6f8?w=500&q=80" alt="Soft glam" loading="lazy">
+          <figcaption>إطلالة ناعمة</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW -->
+  <div class="how-sec">
+    <div class="sec">
+      <div class="sec-head">
+        <div class="small">HOW TO BOOK</div>
+        <h2>خطوات الحجز</h2>
+      </div>
+      <div class="how-grid">
+        <div class="how-card">
+          <div class="num">1</div>
+          <h3>اختاري الباكدج</h3>
+          <p>من قائمة الباكدجات والأسعار المعروضة</p>
+        </div>
+        <div class="how-card">
+          <div class="num">2</div>
+          <h3>حددي اليوم والساعة</h3>
+          <p>المواعيد من 10 صباحًا حتى 7 مساءً</p>
+        </div>
+        <div class="how-card">
+          <div class="num">3</div>
+          <h3>حوّلي العربون</h3>
+          <p>200 ج + صورة الإثبات على واتساب</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-band">
+    <h2>جاهزة تحجزي ميعادك؟</h2>
+    <p>العربون 200 جنيه فقط · تأكيد فوري بعد إثبات التحويل</p>
+    <button class="btn-solid" id="goBookBtn3">✦ ابدئي الحجز الآن</button>
+  </div>
+  <div class="home-footer">© Yasmina Tarek Makeup Artist · جميع الحقوق محفوظة</div>
+</section>
+
+<!-- ========== BOOKING APP ========== -->
+<div class="app" id="appView">
   <aside class="sidebar">
     <div class="side-brand">
       <div class="name">YASMINA TAREK</div>
@@ -276,126 +621,112 @@ a{color:inherit;text-decoration:none}
     </div>
     <div class="side-sec">للجميع</div>
     <nav class="side-nav">
-      <a class="side-link active" href="#book" data-nav="book"><span class="ico">📅</span><span>حجز ميعاد جديد</span></a>
-      <a class="side-link" href="#" data-nav="booked" id="navBooked"><span class="ico">🗓️</span><span>الأيام المحجوزة</span></a>
+      <a class="side-link active" href="#" data-nav="book"><span class="ico">📅</span><span>حجز ميعاد جديد</span></a>
+      <a class="side-link" href="#" data-nav="booked"><span class="ico">🗓️</span><span>الأيام المحجوزة</span></a>
+      <a class="side-link" href="#" data-nav="home"><span class="ico">🏠</span><span>الصفحة الرئيسية</span></a>
     </nav>
     <div class="side-sec">لوحة الأدمن</div>
     <nav class="side-nav">
-      <a class="side-link locked" href="#" data-nav="clients" id="navClients"><span class="ico">🕐</span><span>مواعيد وتفاصيل العملاء</span><span class="lock">🔒</span></a>
+      <a class="side-link locked" href="#" data-nav="clients" id="navClients"><span class="ico">🕐</span><span>مواعيد العملاء</span><span class="lock">🔒</span></a>
       <a class="side-link locked" href="#" data-nav="finance" id="navFinance"><span class="ico">💰</span><span>الحسابات والماليات</span><span class="lock">🔒</span></a>
       <a class="side-link" href="#" data-nav="adminLogin" id="navAdminLogin"><span class="ico">👤</span><span>تسجيل دخول الأدمن</span></a>
     </nav>
     <div class="side-footer">© Yasmina Tarek</div>
   </aside>
 
-  <!-- Main -->
   <div class="main">
-    <div class="demo-bar" id="demoBar" hidden>وضع تجريبي: الحجوزات تتحفظ على هذا الجهاز فقط (Firebase مش متصل)</div>
+    <div class="demo-bar" id="demoBar" hidden>وضع تجريبي: الحجوزات على هذا الجهاز فقط</div>
     <header class="topbar">
-      <div class="guest-pill" id="guestPill"><span class="dot"></span> غير مسجل دخول</div>
-      <div class="top-title" id="topTitle">حجز ميعاد جديد</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn-back-home" id="backHome">← الرئيسية</button>
+        <div class="guest-pill" id="guestPill"><span class="dot"></span> غير مسجل دخول</div>
+      </div>
+      <div class="top-title">حجز ميعاد جديد</div>
     </header>
 
     <div class="content">
-      <!-- Booking Form -->
       <div id="bookView">
         <div class="policy-banner">
           <span>⚠️</span>
-          <div><strong>العربون ثابت 200 جنيه</strong> وغير قابل للاسترجاع بعد الدفع. بعد التحويل لازم تبعثي <strong>صورة الإثبات على واتساب</strong>.</div>
+          <div><strong>العربون ثابت 200 جنيه</strong> وغير قابل للاسترجاع. بعد التحويل ابعتي <strong>صورة الإثبات على واتساب</strong>.</div>
         </div>
-
         <div class="card" id="formCard">
           <div class="card-head">
             <div>
               <h1>✨ احجزي ميعادك الآن</h1>
-              <p>اختاري الباكدج واليوم المناسب وسيتم إضافة اسمك تلقائيًا</p>
+              <p>اختاري الباكدج واليوم والوقت</p>
             </div>
-            <button class="edit-btn" type="button" title="تعديل" onclick="document.getElementById('name').focus()">✏️</button>
           </div>
-
           <div class="sum-bar" id="sumBar" hidden>
-            <div class="sum-item">📦 <strong id="sumService">—</strong></div>
-            <div class="sum-item">📅 <strong id="sumDate">—</strong></div>
-            <div class="sum-item">🕐 <strong id="sumTime">—</strong></div>
-            <div class="sum-item">💰 الإجمالي: <strong id="sumTotal">0</strong> ج</div>
-            <div class="sum-item">💵 العربون: <strong>200</strong> ج</div>
-            <div class="sum-item">⏳ المتبقي: <strong id="sumRem">0</strong> ج</div>
+            <span>📦 <strong id="sumService">—</strong></span>
+            <span>📅 <strong id="sumDate">—</strong></span>
+            <span>🕐 <strong id="sumTime">—</strong></span>
+            <span>💰 <strong id="sumTotal">0</strong> ج</span>
+            <span>💵 عربون: <strong>200</strong> ج</span>
+            <span>⏳ متبقي: <strong id="sumRem">0</strong> ج</span>
           </div>
-
           <form id="bookForm" novalidate>
             <div class="form-row">
               <div class="field">
-                <label><span class="ico">👤</span> الاسم بالكامل</label>
-                <input id="name" type="text" placeholder="مثال: نورا أحمد" required maxlength="80" autocomplete="name">
+                <label>👤 الاسم بالكامل</label>
+                <input id="name" type="text" placeholder="مثال: نورا أحمد" required maxlength="80">
                 <div class="err" id="errName"></div>
               </div>
               <div class="field">
-                <label><span class="ico">📱</span> رقم الهاتف (واتساب)</label>
-                <input id="phone" type="tel" placeholder="01xxxxxxxxx" required maxlength="15" autocomplete="tel" dir="ltr">
+                <label>📱 رقم الهاتف (واتساب)</label>
+                <input id="phone" type="tel" placeholder="01xxxxxxxxx" required maxlength="15" dir="ltr">
                 <div class="err" id="errPhone"></div>
               </div>
               <div class="field highlight">
-                <label><span class="ico">💎</span> اختاري الباكدج</label>
-                <select id="service" required>
-                  <option value="">— اختاري الباكدج المناسب —</option>
-                </select>
+                <label>💎 اختاري الباكدج</label>
+                <select id="service" required><option value="">— اختاري الباكدج —</option></select>
                 <div class="err" id="errService"></div>
               </div>
               <div class="field">
-                <label><span class="ico">📅</span> تاريخ الحجز</label>
+                <label>📅 تاريخ الحجز</label>
                 <input id="date" type="date" required>
                 <div class="err" id="errDate"></div>
               </div>
               <div class="field">
-                <label><span class="ico">🕐</span> وقت الموعد</label>
-                <select id="timeSelect" required>
-                  <option value="">— اختاري الوقت —</option>
-                </select>
+                <label>🕐 وقت الموعد</label>
+                <select id="timeSelect" required><option value="">— اختاري الوقت —</option></select>
                 <div class="err" id="errTime"></div>
               </div>
             </div>
-
-            <div class="form-row" style="grid-template-columns:1fr 1fr 2fr">
+            <div class="form-row form-row-3">
               <div class="field">
-                <label><span class="ico">💵</span> قيمة الديبوزت (مقدم)</label>
+                <label>💵 قيمة الديبوزت</label>
                 <input id="deposit" type="text" value="200 جنيه" class="deposit-locked" readonly tabindex="-1">
               </div>
               <div class="field">
-                <label><span class="ico">📍</span> مكان الحجز</label>
+                <label>📍 مكان الحجز</label>
                 <select id="locationType">
                   <option value="السنتر">🏢 في السنتر</option>
                   <option value="عنوان منزل">🏠 عنوان منزل</option>
                 </select>
               </div>
               <div class="field" id="addressField" hidden>
-                <label><span class="ico">🏠</span> عنوان المنزل بالتفصيل</label>
-                <input id="address" type="text" placeholder="المحافظة - المنطقة - الشارع - رقم العقار" maxlength="350">
+                <label>🏠 عنوان المنزل</label>
+                <input id="address" type="text" placeholder="المحافظة - المنطقة - الشارع" maxlength="350">
                 <div class="err" id="errAddress"></div>
               </div>
             </div>
-
             <div class="outdoor-note" id="outdoorNote" hidden>
               <span>🚗</span>
               <div>يوجد <strong>مصاريف انتقال (Out Door)</strong> يتم تحديدها حسب العنوان.</div>
             </div>
-
             <div class="form-row">
               <div class="field field-full">
-                <label><span class="ico">📝</span> ملاحظات إضافية (اختياري)</label>
-                <textarea id="notes" rows="2" placeholder="أي تفاصيل تانية تحبي نعرفها" maxlength="300"></textarea>
+                <label>📝 ملاحظات (اختياري)</label>
+                <textarea id="notes" rows="2" placeholder="أي تفاصيل إضافية" maxlength="300"></textarea>
               </div>
             </div>
-
             <div class="form-actions">
               <p class="msg" id="formMsg" role="alert"></p>
-              <button type="submit" class="btn-gold" id="submitBtn">
-                <span>تأكيد الحجز الآن</span> <span>✓</span>
-              </button>
+              <button type="submit" class="btn-gold" id="submitBtn"><span>تأكيد الحجز الآن</span> ✓</button>
             </div>
           </form>
         </div>
-
-        <!-- Done -->
         <div class="card done-card" id="doneCard" hidden>
           <div class="check">✓</div>
           <h2>تم تأكيد حجزك بنجاح 🎉</h2>
@@ -405,8 +736,8 @@ a{color:inherit;text-decoration:none}
             <div class="pay-chip">فودافون كاش: <span id="payVodafone"></span> <button type="button" data-copy="vodafone">نسخ</button></div>
             <div class="pay-chip">InstaPay: <span id="payInstapay"></span> <button type="button" data-copy="instapay">نسخ</button></div>
           </div>
-          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px">
-            <a class="btn-gold" id="waBtn" href="#" target="_blank" rel="noopener">💬 ابعتي إثبات الدفع على واتساب</a>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px">
+            <a class="btn-gold" id="waBtn" href="#" target="_blank" rel="noopener">💬 ابعتي إثبات الدفع</a>
             <button type="button" class="btn-outline" id="againBtn">حجز ميعاد تاني</button>
           </div>
         </div>
@@ -415,24 +746,20 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<!-- Mobile bottom nav -->
-<nav class="mob-nav">
-  <a href="#book" class="active" data-nav="book"><span class="ico">📅</span>حجز</a>
-  <a href="#" data-nav="booked"><span class="ico">🗓️</span>المحجوز</a>
+<nav class="mob-nav" id="mobNav" hidden>
+  <a href="#" data-nav="home"><span class="ico">🏠</span>الرئيسية</a>
+  <a href="#" data-nav="book" class="active"><span class="ico">📅</span>حجز</a>
   <a href="#" data-nav="adminLogin"><span class="ico">👤</span>أدمن</a>
 </nav>
 
-<!-- Admin Login Modal -->
+<!-- Admin Login -->
 <div class="modal-overlay" id="adminModal" hidden>
-  <div class="modal-box" style="max-width:400px">
-    <div class="modal-head">
-      <h2>تسجيل دخول الأدمن</h2>
-      <button class="modal-close" data-close="adminModal">✕</button>
-    </div>
+  <div class="modal-box" style="max-width:380px">
+    <div class="modal-head"><h2>تسجيل دخول الأدمن</h2><button class="modal-close" data-close="adminModal">✕</button></div>
     <div class="modal-body">
       <form class="login-form" id="adminLoginForm">
-        <input id="admUser" type="text" placeholder="اسم المستخدم" autocomplete="username" required>
-        <input id="admPass" type="password" placeholder="كلمة المرور" autocomplete="current-password" required>
+        <input id="admUser" type="text" placeholder="اسم المستخدم" required>
+        <input id="admPass" type="password" placeholder="كلمة المرور" required>
         <p class="err" id="admErr"></p>
         <button type="submit" class="btn-gold" style="width:100%;justify-content:center">دخول</button>
       </form>
@@ -443,48 +770,75 @@ a{color:inherit;text-decoration:none}
 <!-- Finance Modal -->
 <div class="modal-overlay" id="financeModal" hidden>
   <div class="modal-box">
-    <div class="modal-head">
-      <h2>💰 الحسابات والماليات</h2>
-      <button class="modal-close" data-close="financeModal">✕</button>
-    </div>
+    <div class="modal-head"><h2>💰 الحسابات والماليات</h2><button class="modal-close" data-close="financeModal">✕</button></div>
     <div class="modal-body">
       <div class="fin-stats" id="finStats"></div>
-      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-        <input id="finSearch" type="search" placeholder="بحث بالاسم أو الهاتف..." style="flex:1;min-width:180px;height:42px;padding:0 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--cream3)">
-        <button class="btn-outline" id="finRefresh">🔄 تحديث</button>
+      <div class="fin-tabs">
+        <button class="fin-tab active" data-ftab="bookings">📅 الحجوزات</button>
+        <button class="fin-tab" data-ftab="purchases">🛍️ المشتريات (ماتريال)</button>
+        <button class="fin-tab" data-ftab="addPurchase">➕ إضافة مشتريات</button>
       </div>
-      <div style="overflow-x:auto">
-        <table class="fin-table">
-          <thead>
-            <tr>
-              <th>التاريخ</th><th>الاسم</th><th>الهاتف</th><th>الباكدج</th>
-              <th>الإجمالي</th><th>العربون</th><th>المتبقي</th><th>الحالة</th><th>إجراء</th>
-            </tr>
-          </thead>
-          <tbody id="finBody"></tbody>
-        </table>
+      <div id="ftab-bookings">
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <input id="finSearch" type="search" placeholder="بحث..." style="flex:1;min-width:160px;height:40px;padding:0 12px;border:1.5px solid var(--line);border-radius:9px;background:var(--mint3)">
+          <button class="btn-outline" id="finRefresh">🔄</button>
+        </div>
+        <div id="editPanel" class="edit-panel" hidden>
+          <input id="editName" placeholder="الاسم">
+          <input id="editPhone" placeholder="الهاتف" dir="ltr">
+          <input id="editTotal" type="number" placeholder="الإجمالي" min="0">
+          <input id="editDeposit" type="number" placeholder="العربون" min="0">
+          <input id="editRemaining" type="number" placeholder="المتبقي" min="0">
+          <input id="editId" type="hidden">
+          <div class="actions">
+            <button class="btn-outline" id="editCancel">إلغاء</button>
+            <button class="btn-gold" id="editSave">حفظ التعديل</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="fin-table">
+            <thead><tr><th>التاريخ</th><th>الاسم</th><th>الهاتف</th><th>الباكدج</th><th>الإجمالي</th><th>العربون</th><th>المتبقي</th><th>الحالة</th><th>إجراء</th></tr></thead>
+            <tbody id="finBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="ftab-purchases" hidden>
+        <div style="overflow-x:auto">
+          <table class="fin-table">
+            <thead><tr><th>التاريخ</th><th>المنتج</th><th>السعر</th><th>تم دفع</th><th>ملاحظات</th><th>إجراء</th></tr></thead>
+            <tbody id="purBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="ftab-addPurchase" hidden>
+        <form class="add-form" id="addPurForm">
+          <div class="field"><label>اسم المنتج / الماتريال</label><input id="purItem" required placeholder="مثال: فاونديشن"></div>
+          <div class="field"><label>السعر الإجمالي</label><input id="purAmount" type="number" min="1" required placeholder="0"></div>
+          <div class="field"><label>تم دفع</label><input id="purPaid" type="number" min="0" value="0" placeholder="0"></div>
+          <div class="field"><label>التاريخ</label><input id="purDate" type="date" required></div>
+          <div class="field field-full"><label>ملاحظات</label><input id="purNotes" placeholder="اختياري"></div>
+          <div class="field field-full" style="display:flex;justify-content:flex-end">
+            <button type="submit" class="btn-gold">💾 حفظ المشتريات</button>
+          </div>
+        </form>
+        <p id="purMsg" style="font-size:13px;color:var(--success)"></p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Clients / Booked days Modal -->
+<!-- Clients Modal -->
 <div class="modal-overlay" id="clientsModal" hidden>
   <div class="modal-box">
-    <div class="modal-head">
-      <h2>🕐 مواعيد وتفاصيل العملاء</h2>
-      <button class="modal-close" data-close="clientsModal">✕</button>
-    </div>
+    <div class="modal-head"><h2>🕐 مواعيد وتفاصيل العملاء</h2><button class="modal-close" data-close="clientsModal">✕</button></div>
     <div class="modal-body">
-      <div style="display:flex;gap:10px;margin-bottom:16px">
-        <select id="clientsYear" style="height:42px;padding:0 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--cream3)"></select>
-        <button class="btn-outline" id="clientsRefresh">🔄 تحديث</button>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <select id="clientsYear" style="height:40px;padding:0 10px;border:1.5px solid var(--line);border-radius:9px;background:var(--mint3)"></select>
+        <button class="btn-outline" id="clientsRefresh">🔄</button>
       </div>
       <div style="overflow-x:auto">
         <table class="fin-table">
-          <thead>
-            <tr><th>التاريخ</th><th>الوقت</th><th>الاسم</th><th>الهاتف</th><th>الباكدج</th><th>المكان</th><th>الحالة</th></tr>
-          </thead>
+          <thead><tr><th>التاريخ</th><th>الوقت</th><th>الاسم</th><th>الهاتف</th><th>الباكدج</th><th>المكان</th><th>الحالة</th><th>إجراء</th></tr></thead>
           <tbody id="clientsBody"></tbody>
         </table>
       </div>
@@ -492,15 +846,12 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<!-- Booked days (public-ish) -->
+<!-- Booked days -->
 <div class="modal-overlay" id="bookedModal" hidden>
-  <div class="modal-box" style="max-width:520px">
-    <div class="modal-head">
-      <h2>🗓️ الأيام المحجوزة</h2>
-      <button class="modal-close" data-close="bookedModal">✕</button>
-    </div>
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-head"><h2>🗓️ الأيام المحجوزة</h2><button class="modal-close" data-close="bookedModal">✕</button></div>
     <div class="modal-body">
-      <p style="color:var(--muted);margin-bottom:16px;font-size:14px">الأيام اللي فيها حجوزات (بدون بيانات شخصية)</p>
+      <p style="color:var(--muted);margin-bottom:12px;font-size:13.5px">الأيام اللي فيها حجوزات</p>
       <div id="bookedList" style="display:flex;flex-wrap:wrap;gap:8px"></div>
     </div>
   </div>
@@ -509,11 +860,15 @@ a{color:inherit;text-decoration:none}
 <div class="toast" id="toast"></div>
 
 <script>
-/* ========== CONFIG ========== */
 const CONFIG={
  brand:"Yasmina Tarek",
  whatsapp:"201016357871",
  payments:{vodafone:"01015043260",instapay:"01094015949"},
+ social:{
+  facebook:"https://www.facebook.com/yasmina.tarek.208454",
+  instagram:"https://www.instagram.com/yasmina_tarek_mua/",
+  tiktok:"https://www.tiktok.com/@yasminatarek6"
+ },
  admin:{user:"yt",pass:"1234",email:"admin@yasmina-tarek.app"},
  packagePrices:{
   "باكدج سواريه":800,"باكدج سواريه VIP":1000,
@@ -524,23 +879,15 @@ const CONFIG={
   "حجاب كامل":0,"كاش حجاب":350,"فورمة ملموم":350,"فورمة سايب":300
  },
  services:[
-  {ar:"باكدج سواريه",en:"Soirée Package"},
-  {ar:"باكدج سواريه VIP",en:"Soirée Package VIP"},
-  {ar:"باكدج خطوبة",en:"Engagement Package"},
-  {ar:"باكدج خطوبة VIP",en:"Engagement Package VIP"},
-  {ar:"باكدج كتب كتاب",en:"Katb Ketab Package"},
-  {ar:"باكدج كتب كتاب VIP",en:"Katb Ketab Package VIP"},
-  {ar:"باكدج حنة",en:"Henna Night Package"},
-  {ar:"باكدج حنة VIP",en:"Henna Night Package VIP"},
-  {ar:"باكدج الزفاف",en:"Bridal Package"},
-  {ar:"حجاب كامل",en:"Full Hijab Style"},
-  {ar:"كاش حجاب",en:"Casual Hijab Style"},
-  {ar:"فورمة ملموم",en:"Updo Style"},
-  {ar:"فورمة سايب",en:"Loose Hair Style"}
+  {ar:"باكدج سواريه"},{ar:"باكدج سواريه VIP"},
+  {ar:"باكدج خطوبة"},{ar:"باكدج خطوبة VIP"},
+  {ar:"باكدج كتب كتاب"},{ar:"باكدج كتب كتاب VIP"},
+  {ar:"باكدج حنة"},{ar:"باكدج حنة VIP"},
+  {ar:"باكدج الزفاف"},
+  {ar:"حجاب كامل"},{ar:"كاش حجاب"},{ar:"فورمة ملموم"},{ar:"فورمة سايب"}
  ],
  slotTimes:Array.from({length:10},(_,i)=>`${String(i+10).padStart(2,"0")}:00`),
- maxDaysAhead:365,
- minHoursAhead:12,
+ maxDaysAhead:365, minHoursAhead:12,
  firebase:{
    apiKey:"AIzaSyBoGxX4SvH6dqvS1_D07GmHliTlrfaJTw8",
    authDomain:"store-754c5.firebaseapp.com",
@@ -551,12 +898,10 @@ const CONFIG={
  }
 };
 const adminFbPass=p=>`YT-${p}-Yasmina`;
-
-/* ========== Helpers ========== */
 const $=s=>document.querySelector(s);
-const $$=s=>document.querySelectorAll(s);
+const $$=s=>[...document.querySelectorAll(s)];
 const today0=(()=>{const d=new Date();d.setHours(0,0,0,0);return d})();
-const dateKey=d=>{const x=d instanceof Date?d:new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`};
+const dateKey=d=>{const x=d instanceof Date?d:new Date(d+"T12:00:00");return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`};
 const slotId=(d,t)=>`${d}_${t.replace(":","")}`;
 const minKey=dateKey(today0);
 const maxD=new Date(today0);maxD.setDate(maxD.getDate()+CONFIG.maxDaysAhead);
@@ -571,76 +916,63 @@ function normalizePhone(v){
 }
 function fmtMoney(n){return Number(n||0).toLocaleString("ar-EG")}
 function bookingDisplayStatus(b){
-  // If appointment date has passed → تم الانتهاء
-  const dateStr = b.d || b.date || "";
-  if(dateStr && dateStr < minKey) return {key:"done", label:"تم الانتهاء"};
-  const st = b.status || "pending";
-  if(st === "received" || st === "partial" || st === "paid") return {key:"received", label:"تم الاستلام"};
-  return {key:"pending", label:"قيد الانتظار"};
+  const dateStr=b.d||b.date||"";
+  if(dateStr&&dateStr<minKey) return {key:"done",label:"تم الانتهاء"};
+  const st=b.status||"pending";
+  if(st==="received"||st==="partial"||st==="paid") return {key:"received",label:"تم الاستلام"};
+  return {key:"pending",label:"قيد الانتظار"};
 }
 function toast(text,bad){
   const el=$("#toast");el.textContent=text;el.classList.toggle("bad",!!bad);el.classList.add("show");
-  clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),4000);
+  clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),3800);
 }
 
-/* ========== Store (Firebase + Demo) ========== */
+/* Store */
 const hasFirebase=!!(CONFIG.firebase.apiKey&&CONFIG.firebase.projectId);
 const FB="https://www.gstatic.com/firebasejs/10.12.2/";
 const demo={
-  get(){try{return JSON.parse(localStorage.getItem("yasmina_demo")||"null")||{slots:{},bookings:{},finBookings:[]}}catch{return{slots:{},bookings:{},finBookings:[]}}},
-  set(v){try{localStorage.setItem("yasmina_demo",JSON.stringify(v))}catch{}},
+  get(){try{return JSON.parse(localStorage.getItem("yasmina_v2")||"null")||{slots:{},bookings:{},finBookings:[],purchases:[]}}catch{return{slots:{},bookings:{},finBookings:[],purchases:[]}}},
+  set(v){try{localStorage.setItem("yasmina_v2",JSON.stringify(v))}catch{}},
   map(){return new Map(Object.entries(this.get().slots))}
 };
 const taken=()=>Object.assign(new Error("taken"),{taken:true});
 
 const store={
-  booked:new Map(),
-  adminUnlocked:false,
+  booked:new Map(), adminUnlocked:false,
   async start(onChange){
     if(hasFirebase){
       const [{initializeApp},fs]=await Promise.all([import(FB+"firebase-app.js"),import(FB+"firebase-firestore.js")]);
       this.fs=fs;this.app=initializeApp(CONFIG.firebase);this.db=fs.getFirestore(this.app);
       import(FB+"firebase-auth.js").then(m=>{this.am=m;this.auth=m.getAuth(this.app)}).catch(()=>{});
       const q=fs.query(fs.collection(this.db,"slots"),fs.where("d",">=",minKey));
-      fs.onSnapshot(q,s=>{
-        this.booked=new Map(s.docs.map(d=>[d.id,d.data().bid||""]));
-        onChange(this.booked);
-      },()=>{$("#formMsg").textContent="فشل تحميل المواعيد"});
+      fs.onSnapshot(q,s=>{this.booked=new Map(s.docs.map(d=>[d.id,d.data().bid||""]));onChange(this.booked);updateAvail()},()=>{});
     }else{
-      $("#demoBar").hidden=false;
-      this.booked=demo.map();
-      onChange(this.booked);
-      window.addEventListener("storage",()=>{this.booked=demo.map();onChange(this.booked)});
+      $("#demoBar").hidden=false;this.booked=demo.map();onChange(this.booked);updateAvail();
     }
   },
   async adminIn(){
     if(!hasFirebase){this.adminUnlocked=true;return}
     if(!this.am){this.am=await import(FB+"firebase-auth.js");this.auth=this.am.getAuth(this.app)}
-    await this.am.signInWithEmailAndPassword(this.auth,CONFIG.admin.email,adminFbPass(CONFIG.admin.pass));
+    try{await this.am.signInWithEmailAndPassword(this.auth,CONFIG.admin.email,adminFbPass(CONFIG.admin.pass))}catch{}
     this.adminUnlocked=true;
   },
   async listYear(y){
-    if(hasFirebase){
-      const {collection,query,where,orderBy,getDocs}=this.fs;
-      const q=query(collection(this.db,"bookings"),where("d",">=",`${y}-01-01`),where("d","<=",`${y}-12-31`),orderBy("d"));
-      const s=await getDocs(q);
-      return s.docs.map(d=>({id:d.id,...d.data()}));
+    if(hasFirebase&&this.adminUnlocked){
+      try{
+        const {collection,query,where,orderBy,getDocs}=this.fs;
+        const q=query(collection(this.db,"bookings"),where("d",">=",`${y}-01-01`),where("d","<=",`${y}-12-31`),orderBy("d"));
+        const s=await getDocs(q);
+        return s.docs.map(d=>({id:d.id,...d.data()}));
+      }catch(e){console.warn(e)}
     }
-    return Object.entries(demo.get().bookings).map(([id,b])=>({id,...b})).filter(b=>String(b.d||"").startsWith(y+"-"));
+    return Object.entries(demo.get().bookings||{}).map(([id,b])=>({id,...b})).filter(b=>String(b.d||"").startsWith(String(y)));
   },
   async book(b){
     const id=slotId(b.d,b.time),h=b.time.replace(":","");
     const pay=`Vodafone Cash ${CONFIG.payments.vodafone} | InstaPay ${CONFIG.payments.instapay}`;
     const total=Number(CONFIG.packagePrices[b.service])||0;
-    const deposit=200;
-    const remaining=Math.max(0,total-deposit);
-    const status="pending";
-    const payload={
-      name:b.name,phone:b.phone,service:b.service,
-      d:b.d,h,time:b.time,
-      locationType:b.locationType,address:b.address||"",notes:b.notes||"",
-      deposit,total,remaining,status,paymentNumber:pay
-    };
+    const deposit=200, remaining=Math.max(0,total-deposit), status="pending";
+    const payload={name:b.name,phone:b.phone,service:b.service,d:b.d,h,time:b.time,locationType:b.locationType,address:b.address||"",notes:b.notes||"",deposit,total,remaining,status,paymentNumber:pay};
     if(hasFirebase){
       const {doc,collection,runTransaction,serverTimestamp}=this.fs;
       const sref=doc(this.db,"slots",id),bref=doc(collection(this.db,"bookings"));
@@ -654,51 +986,131 @@ const store={
     }else{
       const db=demo.get();if(db.slots[id])throw taken();
       const bid="b"+Date.now();db.slots[id]=bid;db.bookings[bid]={...payload,at:Date.now()};
-      db.finBookings=db.finBookings||[];
-      db.finBookings.unshift({id:bid,...payload,date:b.d,createdAt:new Date().toISOString()});
+      db.finBookings=db.finBookings||[];db.finBookings.unshift({id:bid,...payload,date:b.d});
       demo.set(db);this.booked=demo.map();
     }
     return payload;
   },
-  finGet(){
+  async deleteBooking(id, dateStr, timeStr){
+    // Remove from local
     const db=demo.get();
-    return db.finBookings||[];
-  },
-  async finFromDb(){
-    if(hasFirebase&&this.adminUnlocked){
-      try{return await this.listYear(new Date().getFullYear())}catch{return this.finGet()}
+    if(db.bookings) delete db.bookings[id];
+    db.finBookings=(db.finBookings||[]).filter(x=>x.id!==id);
+    if(dateStr&&timeStr){
+      const sid=slotId(dateStr,timeStr);
+      delete db.slots[sid];
+    } else {
+      // find slot by bid
+      Object.keys(db.slots||{}).forEach(k=>{if(db.slots[k]===id)delete db.slots[k]});
     }
-    return this.finGet();
+    demo.set(db);
+    this.booked=demo.map();
+    // Firebase
+    if(hasFirebase&&this.adminUnlocked&&this.fs){
+      try{
+        const {doc,deleteDoc,collection,query,where,getDocs,writeBatch}=this.fs;
+        await deleteDoc(doc(this.db,"bookings",id));
+        // delete matching slot
+        if(dateStr&&timeStr){
+          await deleteDoc(doc(this.db,"slots",slotId(dateStr,timeStr)));
+        }
+      }catch(e){console.warn("FB delete",e)}
+    }
   },
-  finUpdateStatus(id,status,deposit){
-    const db=demo.get();
-    const list=db.finBookings||[];
+  finGet(){return demo.get().finBookings||[]},
+  finSave(list){const db=demo.get();db.finBookings=list;demo.set(db)},
+  finUpdate(id,fields){
+    const list=this.finGet();
     const b=list.find(x=>x.id===id);
-    if(b){
-      if(deposit!=null)b.deposit=Number(deposit);
-      b.remaining=Math.max(0,(b.total||0)-(b.deposit||0));
-      b.status=status||"pending";
-      demo.set(db);
-    }
+    if(b){Object.assign(b,fields);if(fields.deposit!=null||fields.total!=null){b.remaining=Math.max(0,(b.total||0)-(b.deposit||0))}this.finSave(list)}
+  },
+  purchasesGet(){return demo.get().purchases||[]},
+  purchaseAdd(p){
+    const db=demo.get();db.purchases=db.purchases||[];
+    p.id="p"+Date.now();p.createdAt=new Date().toISOString();
+    db.purchases.unshift(p);demo.set(db);return p;
+  },
+  purchaseDel(id){
+    const db=demo.get();db.purchases=(db.purchases||[]).filter(x=>x.id!==id);demo.set(db);
   }
 };
 
-/* ========== UI Init ========== */
-function fillServices(){
-  const sel=$("#service");
-  CONFIG.services.forEach(s=>{
-    const o=document.createElement("option");
-    o.value=s.ar;o.textContent=s.ar;
-    sel.append(o);
+function updateAvail(){
+  let free=0;
+  const now=new Date();
+  for(let i=0;i<7;i++){
+    const d=new Date(today0);d.setDate(d.getDate()+i);
+    const k=dateKey(d);
+    CONFIG.slotTimes.forEach(hm=>{
+      const id=slotId(k,hm);
+      if(store.booked.has(id))return;
+      const [h,m]=hm.split(":").map(Number);
+      const tm=new Date(d);tm.setHours(h,m,0,0);
+      if(tm.getTime()<Date.now()+CONFIG.minHoursAhead*3600e3)return;
+      free++;
+    });
+  }
+  $("#availCount").textContent=free;
+}
+
+/* Views */
+function showHome(){
+  $("#homeView").style.display="";
+  $("#appView").classList.remove("show");
+  $("#mobNav").hidden=true;
+  window.scrollTo({top:0});
+}
+function showApp(){
+  $("#homeView").style.display="none";
+  $("#appView").classList.add("show");
+  $("#mobNav").hidden=false;
+  window.scrollTo({top:0});
+}
+$("#goBookBtn").onclick=showApp;
+$("#goBookBtn2")&&($("#goBookBtn2").onclick=showApp);
+$("#goBookBtn3")&&($("#goBookBtn3").onclick=showApp);
+$("#backHome").onclick=showHome;
+
+/* Price cards on homepage */
+(function renderPrices(){
+  const grid=$("#priceGrid");if(!grid)return;
+  const icons={"باكدج سواريه":"✨","باكدج سواريه VIP":"💎","باكدج خطوبة":"💍","باكدج خطوبة VIP":"💎",
+    "باكدج كتب كتاب":"📜","باكدج كتب كتاب VIP":"💎","باكدج حنة":"🌿","باكدج حنة VIP":"💎",
+    "باكدج الزفاف":"👰","حجاب كامل":"🎀","كاش حجاب":"🧕","فورمة ملموم":"💇","فورمة سايب":"💇"};
+  const order=["باكدج سواريه","باكدج سواريه VIP","باكدج خطوبة","باكدج خطوبة VIP","باكدج كتب كتاب","باكدج كتب كتاب VIP","باكدج حنة","باكدج حنة VIP","باكدج الزفاف","حجاب كامل","كاش حجاب","فورمة ملموم","فورمة سايب"];
+  order.forEach(name=>{
+    const price=CONFIG.packagePrices[name];
+    if(price==null)return;
+    if(price===0)return; // skip free/with package
+    const vip=name.includes("VIP")||name==="باكدج الزفاف";
+    const card=document.createElement("div");
+    card.className="price-card"+(vip?" vip":"");
+    card.innerHTML=`
+      <div class="ico">${icons[name]||"✦"}</div>
+      <h3>${name}</h3>
+      <div class="price">${price.toLocaleString("ar-EG")} <small>جنيه</small></div>
+      <div class="note">عربون تأكيد: 200 ج</div>
+      <button type="button" class="book-mini" data-book-svc="${name}">احجزي ←</button>`;
+    grid.append(card);
   });
+  grid.addEventListener("click",e=>{
+    const b=e.target.closest("[data-book-svc]");if(!b)return;
+    showApp();
+    setTimeout(()=>{
+      const sel=$("#service");
+      if(sel){sel.value=b.dataset.bookSvc;sel.dispatchEvent(new Event("change"));}
+    },100);
+  });
+})();
+
+
+/* Init form */
+function fillServices(){
+  CONFIG.services.forEach(s=>{const o=document.createElement("option");o.value=s.ar;o.textContent=s.ar;$("#service").append(o)});
 }
-function fillDateLimits(){
-  const inp=$("#date");
-  inp.min=minKey;inp.max=maxKey;
-}
+function fillDateLimits(){$("#date").min=minKey;$("#date").max=maxKey}
 function fillTimes(dateStr){
-  const sel=$("#timeSelect");
-  sel.innerHTML='<option value="">— اختاري الوقت —</option>';
+  const sel=$("#timeSelect");sel.innerHTML='<option value="">— اختاري الوقت —</option>';
   if(!dateStr)return;
   const d=new Date(dateStr+"T12:00:00");
   CONFIG.slotTimes.forEach(hm=>{
@@ -710,118 +1122,92 @@ function fillTimes(dateStr){
     const o=document.createElement("option");
     o.value=hm;
     const label=new Date(2000,0,1,h,m).toLocaleTimeString("ar-EG",{hour:"numeric",minute:"2-digit",hour12:true});
-    o.textContent=booked||past?`${label} (محجوز)`:label;
+    o.textContent=(booked||past)?`${label} (محجوز)`:label;
     o.disabled=booked||past;
     sel.append(o);
   });
 }
 function updateSummary(){
-  const svc=$("#service").value;
-  const date=$("#date").value;
-  const time=$("#timeSelect").value;
+  const svc=$("#service").value,date=$("#date").value,time=$("#timeSelect").value;
   const total=CONFIG.packagePrices[svc]||0;
-  const rem=Math.max(0,total-200);
   if(svc||date||time){
     $("#sumBar").hidden=false;
-    $("#sumService").textContent=svc||"—";
-    $("#sumDate").textContent=date||"—";
-    $("#sumTime").textContent=time||"—";
-    $("#sumTotal").textContent=fmtMoney(total);
-    $("#sumRem").textContent=fmtMoney(rem);
+    $("#sumService").textContent=svc||"—";$("#sumDate").textContent=date||"—";$("#sumTime").textContent=time||"—";
+    $("#sumTotal").textContent=fmtMoney(total);$("#sumRem").textContent=fmtMoney(Math.max(0,total-200));
   }else $("#sumBar").hidden=true;
 }
-
-/* ========== Events ========== */
-$("#service").addEventListener("change",updateSummary);
-$("#date").addEventListener("change",e=>{
-  fillTimes(e.target.value);
-  updateSummary();
-});
-$("#timeSelect").addEventListener("change",updateSummary);
-$("#locationType").addEventListener("change",()=>{
+$("#service").onchange=updateSummary;
+$("#date").onchange=e=>{fillTimes(e.target.value);updateSummary()};
+$("#timeSelect").onchange=updateSummary;
+$("#locationType").onchange=()=>{
   const home=$("#locationType").value==="عنوان منزل";
-  $("#addressField").hidden=!home;
-  $("#outdoorNote").hidden=!home;
-});
+  $("#addressField").hidden=!home;$("#outdoorNote").hidden=!home;
+};
 
-$("#bookForm").addEventListener("submit",async e=>{
+$("#bookForm").onsubmit=async e=>{
   e.preventDefault();
   const msg=$("#formMsg");msg.textContent="";
   ["errName","errPhone","errService","errDate","errTime","errAddress"].forEach(id=>$("#"+id).textContent="");
-  const name=$("#name").value.trim();
-  const phone=normalizePhone($("#phone").value);
-  const service=$("#service").value;
-  const d=$("#date").value;
-  const time=$("#timeSelect").value;
-  const locationType=$("#locationType").value;
-  const address=$("#address").value.trim();
-  const notes=$("#notes").value.trim();
+  const name=$("#name").value.trim(),phone=normalizePhone($("#phone").value);
+  const service=$("#service").value,d=$("#date").value,time=$("#timeSelect").value;
+  const locationType=$("#locationType").value,address=$("#address").value.trim(),notes=$("#notes").value.trim();
   let bad=false;
   if(name.length<2){$("#errName").textContent="اكتبي الاسم";bad=true}
-  if(!phone){$("#errPhone").textContent="رقم موبايل صحيح";bad=true}
+  if(!phone){$("#errPhone").textContent="رقم صحيح";bad=true}
   if(!service){$("#errService").textContent="اختاري باكدج";bad=true}
   if(!d){$("#errDate").textContent="اختاري تاريخ";bad=true}
   if(!time){$("#errTime").textContent="اختاري وقت";bad=true}
-  if(locationType==="عنوان منزل"&&address.length<8){$("#errAddress").textContent="اكتبي العنوان بالتفصيل";bad=true}
+  if(locationType==="عنوان منزل"&&address.length<8){$("#errAddress").textContent="اكتبي العنوان";bad=true}
   if(bad)return;
-
-  const btn=$("#submitBtn");btn.disabled=true;btn.innerHTML="جاري الحجز...";
+  const btn=$("#submitBtn");btn.disabled=true;btn.textContent="جاري الحجز...";
   try{
     const payload=await store.book({name,phone,service,d,time,locationType,address,notes});
-    showDone({name,phone,service,d,time,locationType,...payload});
-    toast("تم الحجز بنجاح ✅");
+    showDone({name,phone,service,d,time,...payload});
+    toast("تم الحجز بنجاح ✅");updateAvail();
   }catch(err){
-    if(err.taken){msg.textContent="الميعاد اتاخد، اختاري وقت تاني";fillTimes(d)}
-    else{msg.textContent="حصل خطأ، حاولي تاني أو تواصلي على واتساب";console.error(err)}
-  }finally{btn.disabled=false;btn.innerHTML='<span>تأكيد الحجز الآن</span> <span>✓</span>'}
-});
-
-function showDone(b){
-  $("#formCard").hidden=true;
-  $("#doneCard").hidden=false;
-  $("#doneInfo").textContent=`${b.name} — ${b.service} — ${b.d} الساعة ${b.time}`;
-  $("#doneAfter").innerHTML=`حوّلي <strong>العربون الثابت 200 جنيه</strong> على فودافون كاش <strong>${CONFIG.payments.vodafone}</strong> أو InstaPay <strong>${CONFIG.payments.instapay}</strong>، وبعدها ابعتي <strong>صورة التحويل (إثبات الدفع)</strong> على واتساب. الحجز ظاهر عند الأدمن كـ "قيد الانتظار" لحد ما يؤكد الاستلام.`;
-  $("#payVodafone").textContent=CONFIG.payments.vodafone;
-  $("#payInstapay").textContent=CONFIG.payments.instapay;
-  const waText=`السلام عليكم، عملت حجز على الموقع:\nالاسم: ${b.name}\nالباكدج: ${b.service}\nالتاريخ: ${b.d}\nالوقت: ${b.time}\nالعربون: 200 جنيه\n\nمرفق صورة إثبات التحويل.`;
-  $("#waBtn").href=`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(waText)}`;
-  $("#doneCard").scrollIntoView({behavior:"smooth",block:"start"});
-}
-$("#againBtn").onclick=()=>{
-  $("#doneCard").hidden=true;$("#formCard").hidden=false;
-  $("#bookForm").reset();$("#deposit").value="200 جنيه";
-  $("#addressField").hidden=true;$("#outdoorNote").hidden=true;$("#sumBar").hidden=true;
-  fillTimes("");$("#formMsg").textContent="";
+    if(err.taken){msg.textContent="الميعاد اتاخد";fillTimes(d)}
+    else{msg.textContent="حصل خطأ، حاولي تاني";console.error(err)}
+  }finally{btn.disabled=false;btn.innerHTML="<span>تأكيد الحجز الآن</span> ✓"}
 };
 
-$$("[data-copy]").forEach(btn=>btn.addEventListener("click",async()=>{
-  const n=CONFIG.payments[btn.dataset.copy];
-  try{await navigator.clipboard.writeText(n);btn.textContent="تم ✓";setTimeout(()=>btn.textContent="نسخ",1500)}catch{btn.textContent=n}
-}));
+function showDone(b){
+  $("#formCard").hidden=true;$("#doneCard").hidden=false;
+  $("#doneInfo").textContent=`${b.name} — ${b.service} — ${b.d} الساعة ${b.time}`;
+  $("#doneAfter").innerHTML=`حوّلي <strong>العربون 200 جنيه</strong> على فودافون كاش <strong>${CONFIG.payments.vodafone}</strong> أو InstaPay <strong>${CONFIG.payments.instapay}</strong>، وابعتي <strong>صورة الإثبات</strong> على واتساب.`;
+  $("#payVodafone").textContent=CONFIG.payments.vodafone;$("#payInstapay").textContent=CONFIG.payments.instapay;
+  const wa=`السلام عليكم، حجزت على الموقع:\nالاسم: ${b.name}\nالباكدج: ${b.service}\nالتاريخ: ${b.d}\nالوقت: ${b.time}\nالعربون: 200 ج\n\nمرفق إثبات التحويل.`;
+  $("#waBtn").href=`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(wa)}`;
+}
+$("#againBtn").onclick=()=>{
+  $("#doneCard").hidden=true;$("#formCard").hidden=false;$("#bookForm").reset();
+  $("#deposit").value="200 جنيه";$("#addressField").hidden=true;$("#outdoorNote").hidden=true;$("#sumBar").hidden=true;fillTimes("");
+};
+$$("[data-copy]").forEach(btn=>btn.onclick=async()=>{
+  try{await navigator.clipboard.writeText(CONFIG.payments[btn.dataset.copy]);btn.textContent="تم ✓";setTimeout(()=>btn.textContent="نسخ",1200)}catch{}
+});
 
-/* ========== Navigation & Modals ========== */
+/* Nav & Modals */
 function openModal(id){$(id).hidden=false;document.body.style.overflow="hidden"}
 function closeModal(id){$(id).hidden=true;document.body.style.overflow=""}
-$$("[data-close]").forEach(b=>b.addEventListener("click",()=>closeModal("#"+b.dataset.close)));
-$$(".modal-overlay").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)closeModal("#"+m.id)}));
+$$("[data-close]").forEach(b=>b.onclick=()=>closeModal("#"+b.dataset.close));
+$$(".modal-overlay").forEach(m=>m.onclick=e=>{if(e.target===m)closeModal("#"+m.id)});
 
 function setAdminUI(on){
   store.adminUnlocked=on;
   ["navClients","navFinance"].forEach(id=>{
-    const el=$("#"+id);
-    el.classList.toggle("locked",!on);
-    el.querySelector(".lock").textContent=on?"":"🔒";
+    const el=$("#"+id);el.classList.toggle("locked",!on);
+    const lock=el.querySelector(".lock");if(lock)lock.textContent=on?"":"🔒";
   });
   $("#guestPill").innerHTML=on?'<span class="dot" style="background:var(--success)"></span> أدمن':'<span class="dot"></span> غير مسجل دخول';
-  $("#navAdminLogin").querySelector("span:last-child").textContent=on?"تسجيل خروج":"تسجيل دخول الأدمن";
+  $("#navAdminLogin").querySelector("span:last-of-type").textContent=on?"تسجيل خروج":"تسجيل دخول الأدمن";
 }
 
 document.addEventListener("click",e=>{
-  const nav=e.target.closest("[data-nav]");
-  if(!nav)return;
+  const nav=e.target.closest("[data-nav]");if(!nav)return;
   e.preventDefault();
   const a=nav.dataset.nav;
-  if(a==="book"){closeModal("#bookedModal");window.scrollTo({top:0,behavior:"smooth"});return}
+  if(a==="home"){showHome();return}
+  if(a==="book"){showApp();return}
   if(a==="booked"){renderBookedDays();openModal("#bookedModal");return}
   if(a==="adminLogin"){
     if(store.adminUnlocked){setAdminUI(false);toast("تم تسجيل الخروج");return}
@@ -837,51 +1223,63 @@ document.addEventListener("click",e=>{
   }
 });
 
-$("#adminLoginForm").addEventListener("submit",async e=>{
+$("#adminLoginForm").onsubmit=async e=>{
   e.preventDefault();
-  const u=$("#admUser").value.trim().toLowerCase();
-  const p=$("#admPass").value;
-  $("#admErr").textContent="";
-  if(u!==CONFIG.admin.user.toLowerCase()||p!==CONFIG.admin.pass){
-    $("#admErr").textContent="بيانات خاطئة";return;
-  }
-  try{
-    await store.adminIn();
-    setAdminUI(true);
-    closeModal("#adminModal");
-    toast("مرحباً بكِ 👋");
-  }catch(err){
-    // still unlock local finance even if Firebase auth fails
-    setAdminUI(true);
-    closeModal("#adminModal");
-    toast("تم الدخول (وضع محلي)");
-  }
+  const u=$("#admUser").value.trim().toLowerCase(),p=$("#admPass").value;
+  if(u!==CONFIG.admin.user.toLowerCase()||p!==CONFIG.admin.pass){$("#admErr").textContent="بيانات خاطئة";return}
+  await store.adminIn();setAdminUI(true);closeModal("#adminModal");toast("مرحباً بكِ 👋");
+};
+
+/* Finance tabs */
+$$("[data-ftab]").forEach(t=>t.onclick=()=>{
+  $$("[data-ftab]").forEach(x=>x.classList.remove("active"));t.classList.add("active");
+  ["bookings","purchases","addPurchase"].forEach(id=>{
+    const el=$("#ftab-"+id);if(el)el.hidden=t.dataset.ftab!==id;
+  });
+  if(t.dataset.ftab==="purchases")renderPurchases();
 });
 
 async function renderFinance(){
-  const rows=await store.finFromDb();
-  const body=$("#finBody");body.innerHTML="";
-  let income=0,remaining=0;
+  let rows=[];
+  try{rows=await store.listYear(new Date().getFullYear())}catch{}
+  if(!rows.length) rows=store.finGet();
+  // merge local fin if needed
+  const local=store.finGet();
+  const ids=new Set(rows.map(r=>r.id));
+  local.forEach(l=>{if(!ids.has(l.id))rows.push(l)});
+
+  let totalAll=0,depSum=0,remSum=0,salesSum=0;
   rows.forEach(b=>{
-    income+=Number(b.deposit)||0;
-    remaining+=Number(b.remaining)||0;
+    totalAll+=Number(b.total)||0;
+    depSum+=Number(b.deposit)||0;
+    remSum+=Number(b.remaining)||0;
+    const st=b.status||"pending";
+    if(st==="received"||st==="partial"||st==="paid") salesSum+=Number(b.deposit)||0;
   });
+  const purchases=store.purchasesGet();
+  const expSum=purchases.reduce((s,p)=>s+(Number(p.paid)||Number(p.amount)||0),0);
+
   $("#finStats").innerHTML=`
-    <div class="fin-stat income"><div class="lbl">إجمالي العربون المستلم</div><div class="val">${fmtMoney(income)} ج</div></div>
-    <div class="fin-stat"><div class="lbl">المتبقي عند العملاء</div><div class="val">${fmtMoney(remaining)} ج</div></div>
-    <div class="fin-stat"><div class="lbl">عدد الحجوزات</div><div class="val">${rows.length}</div></div>
+    <div class="fin-stat"><div class="lbl">إجمالي المبلغ</div><div class="val">${fmtMoney(totalAll)} ج</div></div>
+    <div class="fin-stat"><div class="lbl">عدد العملاء</div><div class="val">${rows.length}</div></div>
+    <div class="fin-stat income"><div class="lbl">مجموع العربون</div><div class="val">${fmtMoney(depSum)} ج</div></div>
+    <div class="fin-stat remain"><div class="lbl">المتبقي تحصيله</div><div class="val">${fmtMoney(remSum)} ج</div></div>
+    <div class="fin-stat income"><div class="lbl">المبيعات (مستلم)</div><div class="val">${fmtMoney(salesSum)} ج</div></div>
+    <div class="fin-stat expense"><div class="lbl">المصروفات (مشتريات)</div><div class="val">${fmtMoney(expSum)} ج</div></div>
   `;
+
   const q=($("#finSearch").value||"").toLowerCase();
   const filtered=q?rows.filter(b=>(b.name||"").toLowerCase().includes(q)||(b.phone||"").includes(q)||(b.service||"").includes(q)):rows;
-  if(!filtered.length){body.innerHTML='<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--muted)">لا توجد حجوزات</td></tr>';return}
+  const body=$("#finBody");body.innerHTML="";
+  if(!filtered.length){body.innerHTML='<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--muted)">لا توجد حجوزات</td></tr>';return}
   filtered.forEach(b=>{
     const disp=bookingDisplayStatus(b);
+    const canConfirm=disp.key==="pending";
     const tr=document.createElement("tr");
-    const canConfirm = disp.key === "pending";
     tr.innerHTML=`
       <td>${b.d||b.date||"—"}</td>
       <td><strong>${b.name||"—"}</strong></td>
-      <td><a href="https://wa.me/2${b.phone}" target="_blank" style="color:var(--gold2)">💬 ${b.phone||"—"}</a></td>
+      <td><a href="https://wa.me/2${b.phone}" target="_blank" style="color:var(--sage2)">💬 ${b.phone||"—"}</a></td>
       <td>${b.service||"—"}</td>
       <td>${fmtMoney(b.total)} ج</td>
       <td>${fmtMoney(b.deposit)} ج</td>
@@ -889,50 +1287,128 @@ async function renderFinance(){
       <td><span class="status-badge ${disp.key}">${disp.label}</span></td>
       <td class="fin-act">
         ${canConfirm?`<button class="ok" data-fin="confirm" data-id="${b.id}">✅ استلام</button>`:""}
-        <button class="danger" data-fin="del" data-id="${b.id}">🗑️</button>
+        <button class="edit" data-fin="edit" data-id="${b.id}">✏️</button>
+        <button class="danger" data-fin="del" data-id="${b.id}" data-d="${b.d||b.date||""}" data-t="${b.time||""}">🗑️</button>
       </td>`;
     body.append(tr);
   });
 }
-$("#finSearch").addEventListener("input",()=>renderFinance());
+$("#finSearch").oninput=()=>renderFinance();
 $("#finRefresh").onclick=()=>renderFinance();
-document.addEventListener("click",e=>{
-  const btn=e.target.closest("[data-fin]");
-  if(!btn)return;
+
+document.addEventListener("click",async e=>{
+  const btn=e.target.closest("[data-fin]");if(!btn)return;
   const id=btn.dataset.id;
   if(btn.dataset.fin==="confirm"){
-    store.finUpdateStatus(id,"received");
-    toast("تم الاستلام ✅");
+    store.finUpdate(id,{status:"received"});
+    // try FB update
+    if(hasFirebase&&store.adminUnlocked&&store.fs){
+      try{const {doc,updateDoc}=store.fs;await updateDoc(doc(store.db,"bookings",id),{status:"received"})}catch{}
+    }
+    toast("تم الاستلام — اتسجل في المبيعات ✅");
     renderFinance();
   }else if(btn.dataset.fin==="del"){
-    if(!confirm("حذف الحجز؟"))return;
-    const db=demo.get();
-    db.finBookings=(db.finBookings||[]).filter(x=>x.id!==id);
-    demo.set(db);
-    toast("تم الحذف");
-    renderFinance();
+    if(!confirm("حذف الحجز نهائيًا من الموقع؟"))return;
+    await store.deleteBooking(id, btn.dataset.d, btn.dataset.t);
+    toast("تم الحذف نهائيًا");
+    renderFinance();updateAvail();
+    if(!$("clientsModal").hidden)renderClients();
+  }else if(btn.dataset.fin==="edit"){
+    let rows=[];try{rows=await store.listYear(new Date().getFullYear())}catch{}
+    if(!rows.length)rows=store.finGet();
+    const local=store.finGet();local.forEach(l=>{if(!rows.find(r=>r.id===l.id))rows.push(l)});
+    const b=rows.find(x=>x.id===id);if(!b)return;
+    $("#editId").value=id;
+    $("#editName").value=b.name||"";
+    $("#editPhone").value=b.phone||"";
+    $("#editTotal").value=b.total||0;
+    $("#editDeposit").value=b.deposit||0;
+    $("#editRemaining").value=b.remaining||0;
+    $("#editPanel").hidden=false;
+  }else if(btn.dataset.fin==="cdel"){
+    if(!confirm("حذف الحجز نهائيًا؟"))return;
+    await store.deleteBooking(id, btn.dataset.d, btn.dataset.t);
+    toast("تم الحذف");renderClients();updateAvail();
   }
 });
 
+$("#editCancel").onclick=()=>{$("#editPanel").hidden=true};
+$("#editSave").onclick=async()=>{
+  const id=$("#editId").value;
+  const fields={
+    name:$("#editName").value.trim(),
+    phone:normalizePhone($("#editPhone").value)||$("#editPhone").value.trim(),
+    total:Number($("#editTotal").value)||0,
+    deposit:Number($("#editDeposit").value)||0,
+    remaining:Number($("#editRemaining").value)||0
+  };
+  store.finUpdate(id,fields);
+  if(hasFirebase&&store.adminUnlocked&&store.fs){
+    try{const {doc,updateDoc}=store.fs;await updateDoc(doc(store.db,"bookings",id),fields)}catch{}
+  }
+  $("#editPanel").hidden=true;
+  toast("تم التعديل ✅");
+  renderFinance();
+};
+
+/* Purchases */
+function renderPurchases(){
+  const rows=store.purchasesGet();
+  const body=$("#purBody");body.innerHTML="";
+  if(!rows.length){body.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted)">لا توجد مشتريات</td></tr>';return}
+  rows.forEach(p=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${p.date||"—"}</td><td><strong>${p.item||"—"}</strong></td>
+      <td>${fmtMoney(p.amount)} ج</td><td>${fmtMoney(p.paid)} ج</td>
+      <td>${p.notes||"—"}</td>
+      <td class="fin-act"><button class="danger" data-purdel="${p.id}">🗑️</button></td>`;
+    body.append(tr);
+  });
+}
+document.addEventListener("click",e=>{
+  const btn=e.target.closest("[data-purdel]");if(!btn)return;
+  if(!confirm("حذف هذه المشتريات؟"))return;
+  store.purchaseDel(btn.dataset.purdel);
+  toast("تم الحذف");renderPurchases();renderFinance();
+});
+$("#addPurForm").onsubmit=e=>{
+  e.preventDefault();
+  store.purchaseAdd({
+    item:$("#purItem").value.trim(),
+    amount:Number($("#purAmount").value)||0,
+    paid:Number($("#purPaid").value)||0,
+    date:$("#purDate").value,
+    notes:$("#purNotes").value.trim()
+  });
+  e.target.reset();
+  $("#purDate").value=minKey;
+  $("#purMsg").textContent="تم حفظ المشتريات ✅";
+  setTimeout(()=>$("#purMsg").textContent="",2500);
+  toast("تمت إضافة المشتريات");
+};
+
+/* Clients */
 async function renderClients(){
   const y=Number($("#clientsYear").value)||new Date().getFullYear();
   const rows=await store.listYear(y);
   const body=$("#clientsBody");body.innerHTML="";
-  if(!rows.length){body.innerHTML='<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">لا توجد حجوزات</td></tr>';return}
+  if(!rows.length){body.innerHTML='<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted)">لا توجد حجوزات</td></tr>';return}
   rows.forEach(b=>{
     const disp=bookingDisplayStatus(b);
     const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${b.d||"—"}</td><td>${b.time||"—"}</td><td>${b.name||"—"}</td>
-      <td><a href="https://wa.me/2${b.phone}" target="_blank" style="color:var(--gold2)">💬 ${b.phone||""}</a></td>
+    tr.innerHTML=`
+      <td>${b.d||"—"}</td><td>${b.time||"—"}</td><td>${b.name||"—"}</td>
+      <td><a href="https://wa.me/2${b.phone}" target="_blank" style="color:var(--sage2)">💬 ${b.phone||""}</a></td>
       <td>${b.service||"—"}</td><td>${b.locationType||"—"}</td>
-      <td><span class="status-badge ${disp.key}">${disp.label}</span></td>`;
+      <td><span class="status-badge ${disp.key}">${disp.label}</span></td>
+      <td class="fin-act"><button class="danger" data-fin="cdel" data-id="${b.id}" data-d="${b.d||""}" data-t="${b.time||""}">🗑️ حذف</button></td>`;
     body.append(tr);
   });
 }
 $("#clientsRefresh").onclick=()=>renderClients();
-(function fillYears(){
-  const sel=$("#clientsYear");
-  const y=new Date().getFullYear();
+(function(){
+  const sel=$("#clientsYear"),y=new Date().getFullYear();
   for(let i=y-1;i<=y+1;i++){const o=document.createElement("option");o.value=i;o.textContent=i;if(i===y)o.selected=true;sel.append(o)}
 })();
 
@@ -941,27 +1417,22 @@ function renderBookedDays(){
   const days=new Set();
   store.booked.forEach((_,id)=>{const d=id.split("_")[0];if(d>=minKey)days.add(d)});
   const sorted=[...days].sort();
-  if(!sorted.length){box.innerHTML='<p style="color:var(--muted)">مفيش أيام محجوزة حالياً</p>';return}
+  if(!sorted.length){box.innerHTML='<p style="color:var(--muted)">مفيش أيام محجوزة</p>';return}
   sorted.forEach(d=>{
     const el=document.createElement("span");
-    el.style.cssText="padding:8px 14px;border-radius:10px;background:var(--gold-bg);border:1px solid var(--gold-l);font-weight:600;font-size:13.5px";
-    el.textContent=d;
-    box.append(el);
+    el.style.cssText="padding:7px 12px;border-radius:9px;background:var(--sage-bg);border:1px solid var(--sage-l);font-weight:600;font-size:13px";
+    el.textContent=d;box.append(el);
   });
 }
 
-/* ========== Start ========== */
-fillServices();
-fillDateLimits();
-store.start(map=>{
-  store.booked=map;
-  const d=$("#date").value;
-  if(d)fillTimes(d);
-}).catch(()=>{$("#formMsg").textContent="فشل الاتصال بقاعدة البيانات"});
+/* Social + WA */
+$$("[data-soc]").forEach(a=>{const u=CONFIG.social[a.dataset.soc];if(u)a.href=u});
+$("#waPriceBtn").href=`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent("السلام عليكم، حابة أسأل عن الأسعار")}`;
+$("#purDate").value=minKey;
 
-if("serviceWorker"in navigator&&location.protocol.startsWith("http")){
-  navigator.serviceWorker.register("sw.js").catch(()=>{});
-}
+fillServices();fillDateLimits();
+store.start(map=>{store.booked=map;const d=$("#date").value;if(d)fillTimes(d);updateAvail()}).catch(()=>{});
+if("serviceWorker"in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>
 </body>
 </html>
