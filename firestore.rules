@@ -24,20 +24,36 @@ service cloud.firestore {
     }
 
     // bookings: أي حد يقدر يبعت حجز، بس القراءة والتعديل والحذف للأدمن بس.
+    // العربون ثابت 200 ج، والحالة تبدأ pending لحد ما الأدمن يؤكد الاستلام.
     match /bookings/{bookingId} {
-      allow create: if request.resource.data.keys().hasOnly(['name', 'phone', 'service', 'd', 'h', 'time', 'locationType', 'address', 'notes', 'deposit', 'paymentNumber', 'at'])
+      allow create: if request.resource.data.keys().hasOnly([
+                        'name', 'phone', 'service', 'd', 'h', 'time',
+                        'locationType', 'address', 'notes',
+                        'deposit', 'total', 'remaining', 'status',
+                        'paymentNumber', 'at'
+                      ])
                     && request.resource.data.name is string && request.resource.data.name.size() <= 80
                     && request.resource.data.phone is string && request.resource.data.phone.size() <= 20
                     && request.resource.data.service is string && request.resource.data.service.size() <= 80
                     && request.resource.data.notes is string && request.resource.data.notes.size() <= 300
                     && request.resource.data.address is string && request.resource.data.address.size() <= 350
+                    && request.resource.data.deposit is number && request.resource.data.deposit == 200
+                    && request.resource.data.total is number && request.resource.data.total >= 200
+                    && request.resource.data.remaining is number
+                    && request.resource.data.status is string
                     && request.resource.data.at == request.time
                     // لازم الميعاد يتحجز في نفس العملية
                     && existsAfter(/databases/$(database)/documents/slots/$(request.resource.data.d + '_' + request.resource.data.h));
-      allow read: if isAdmin();     // عرض حجوزات الشهور
+      allow read: if isAdmin();     // عرض حجوزات الشهور + الحسابات
       allow update: if isAdmin()
-                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['d', 'h', 'time', 'service'])
-                    && existsAfter(/databases/$(database)/documents/slots/$(request.resource.data.d + '_' + request.resource.data.h));
+                    && (
+                      // نقل / تعديل ميعاد أو خدمة
+                      (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['d', 'h', 'time', 'service'])
+                       && existsAfter(/databases/$(database)/documents/slots/$(request.resource.data.d + '_' + request.resource.data.h)))
+                      ||
+                      // تأكيد استلام العربون أو تحديث الحالة المالية
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['deposit', 'remaining', 'status', 'total'])
+                    );
       allow delete: if isAdmin();
     }
   }
