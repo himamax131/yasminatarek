@@ -482,6 +482,21 @@ a{color:inherit;text-decoration:none}
 html,body{max-width:100vw;overflow-x:hidden}
 img{max-width:100%;height:auto}
 
+.edit-panel .edit-lbl{font-size:11.5px;font-weight:700;color:var(--muted);grid-column:1/-1;margin-top:4px}
+.edit-panel input[type="date"]{grid-column:1/-1;height:40px;padding:0 10px;border:1.5px solid #B3D4FC;border-radius:8px;background:#fff}
+
+
+.edit-panel .edit-notes{
+  grid-column:1/-1;width:100%;min-height:72px;padding:10px 12px;
+  border:1.5px solid #B3D4FC;border-radius:10px;background:#fff;resize:vertical;font-size:14px;
+}
+.note-pill{
+  display:block;margin-top:4px;padding:6px 8px;border-radius:8px;
+  background:#FFF8E7;border:1px solid #E8D5A3;font-size:12px;color:#6B4E00;line-height:1.45;
+  white-space:pre-wrap;max-width:220px;
+}
+
+
 .month-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
 .month-select{height:40px;padding:0 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--mint3);font-weight:600}
 .month-chips{display:flex;flex-wrap:wrap;gap:6px;flex:1}
@@ -962,9 +977,15 @@ img{max-width:100%;height:auto}
           <input id="editTotal" type="number" placeholder="الإجمالي" min="0">
           <input id="editDeposit" type="number" placeholder="العربون" min="0">
           <input id="editRemaining" type="number" placeholder="المتبقي" min="0">
+          <label class="edit-lbl">تاريخ دفع العربون</label>
+          <input id="editDepPaid" type="date" title="شهر حسابات العربون">
+          <label class="edit-lbl">تاريخ تحصيل المتبقي</label>
+          <input id="editRemPaid" type="date" title="شهر حسابات المتبقي">
+          <textarea id="editNotes" class="edit-notes" rows="3" placeholder="📝 ملاحظات الأدمن (تظهر لكِ فقط في الحسابات)" maxlength="500"></textarea>
           <input id="editId" type="hidden">
           <div class="actions">
             <button class="btn-outline" id="editCancel">إلغاء</button>
+            <button type="button" class="btn-outline" id="editMarkRem" style="border-color:var(--success);color:var(--success)">💵 تحصيل المتبقي اليوم</button>
             <button class="btn-gold" id="editSave">حفظ التعديل</button>
           </div>
         </div>
@@ -1191,12 +1212,31 @@ const store={
     }
     return Object.entries(demo.get().bookings||{}).map(([id,b])=>({id,...b})).filter(b=>String(b.d||"").startsWith(String(y)));
   },
+  async listFinancePool(y){
+    // حجوزات مواعيد السنة + السنة السابقة/التالية (عشان العربون يتسجل في شهر الحجز مش شهر الموعد)
+    const years=[y-1,y,y+1];
+    const map=new Map();
+    for(const yy of years){
+      const rows=await this.listYear(yy);
+      rows.forEach(r=>map.set(r.id,r));
+    }
+    // أي حجز العربون أو المتبقي اتدفع في السنة دي حتى لو الموعد سنة تانية
+    if(this.finGet){
+      this.finGet().forEach(r=>{
+        const dep=String(r.depositPaidOn||r.bookedOn||"");
+        const rem=String(r.remainingPaidOn||"");
+        if(dep.startsWith(String(y))||rem.startsWith(String(y))||String(r.d||"").startsWith(String(y))) map.set(r.id,r);
+      });
+    }
+    return [...map.values()];
+  },
   async book(b){
     const id=slotId(b.d,b.time),h=b.time.replace(":","");
     const pay=`Vodafone Cash ${CONFIG.payments.vodafone} | InstaPay ${CONFIG.payments.instapay}`;
     const total=Number(CONFIG.packagePrices[b.service])||0;
     const deposit=200, remaining=Math.max(0,total-deposit), status="pending";
-    const payload={name:b.name,phone:b.phone,service:b.service,d:b.d,h,time:b.time,locationType:b.locationType,address:b.address||"",notes:b.notes||"",deposit,total,remaining,status,paymentNumber:pay};
+    const bookedOn=new Date().toISOString().slice(0,10);
+    const payload={name:b.name,phone:b.phone,service:b.service,d:b.d,h,time:b.time,locationType:b.locationType,address:b.address||"",notes:b.notes||"",deposit,total,remaining,status,paymentNumber:pay,bookedOn,depositPaidOn:"",remainingPaidOn:""};
     if(hasFirebase){
       const {doc,collection,runTransaction,serverTimestamp}=this.fs;
       const sref=doc(this.db,"slots",id),bref=doc(collection(this.db,"bookings"));
@@ -1501,46 +1541,61 @@ async function renderFinance(){
   finFilter.y=y;
 
   let all=[];
-  try{all=await store.listYear(y)}catch{}
+  try{all=await store.listFinancePool(y)}catch(e){
+    try{all=await store.listYear(y)}catch{}
+  }
   if(!all.length && store.finGet){
-    const local=store.finGet();
-    all=local.filter(b=>String(b.d||b.date||"").startsWith(String(y)));
+    all=store.finGet();
   }
 
-  // month chips
-  const counts=monthCounts(all, y);
+  // counts for chips: by appointment month OR payment activity in that month
+  const counts={};
+  all.forEach(b=>{
+    const add=(key)=>{if(key&&key.startsWith(String(y))){const m=Number(key.slice(5,7));if(m>=1&&m<=12)counts[m]=(counts[m]||0)+1}};
+    add(String(b.d||""));
+    add(String(b.depositPaidOn||""));
+    add(String(b.remainingPaidOn||""));
+  });
+  // dedupe counts roughly ok for chip display
   renderMonthChips($("#finMonthChips"), finFilter, counts, ()=>renderFinance());
 
-  // filter by month
-  let rows=filterByMonth(all, y, finFilter.m);
-
-  let totalAll=0,depSum=0,remSum=0,salesSum=0;
-  rows.forEach(b=>{
-    totalAll+=Number(b.total)||0;
-    depSum+=Number(b.deposit)||0;
-    remSum+=Number(b.remaining)||0;
-    const st=b.status||"pending";
-    if(st==="received"||st==="partial"||st==="paid") salesSum+=Number(b.deposit)||0;
-  });
-  const purchases=store.purchasesGet?store.purchasesGet():[];
-  // filter purchases by same year/month if date field present
-  const purF=purchases.filter(p=>{
-    const d=String(p.date||"");
-    if(!d.startsWith(String(y))) return !finFilter.m; // if no year match and viewing all months of y, skip orphan? keep year only
+  const inPeriod=(dateStr)=>{
+    const d=String(dateStr||"");
+    if(!d.startsWith(String(y))) return false;
     if(!finFilter.m) return true;
     return Number(d.slice(5,7))===finFilter.m;
+  };
+
+  // صفوف ظاهرة: موعد في الفترة أو عربون/متبقي اتدفع في الفترة
+  let rows=all.filter(b=>inPeriod(b.d)||inPeriod(b.depositPaidOn)||inPeriod(b.remainingPaidOn));
+
+  let depSum=0, remCollected=0, remPending=0, apptCount=0;
+  all.forEach(b=>{
+    if(inPeriod(b.d)) apptCount++;
+    // العربون في شهر الدفع
+    if(b.depositPaidOn && inPeriod(b.depositPaidOn)) depSum += Number(b.deposit)||0;
+    // المتبقي المحصّل = (الإجمالي - العربون - المتبقي الحالي) في شهر التحصيل
+    if(b.remainingPaidOn && inPeriod(b.remainingPaidOn)){
+      const total=Number(b.total)||0, dep=Number(b.deposit)||0, still=Number(b.remaining)||0;
+      remCollected += Math.max(0, total - dep - still);
+    }
+    if(inPeriod(b.d)) remPending += Number(b.remaining)||0;
   });
+
+  const purchases=store.purchasesGet?store.purchasesGet():[];
+  const purF=purchases.filter(p=>inPeriod(p.date));
   const expSum=purF.reduce((s,p)=>s+(Number(p.paid)||Number(p.amount)||0),0);
 
   const monthLabel=finFilter.m?AR_MONTHS[finFilter.m-1]+" "+y:"سنة "+y;
+  const income=depSum+remCollected;
   $("#finStats").innerHTML=`
     <div class="fin-stat"><div class="lbl">الفترة</div><div class="val" style="font-size:14px">${monthLabel}</div></div>
-    <div class="fin-stat"><div class="lbl">عدد الحجوزات</div><div class="val">${rows.length}</div></div>
-    <div class="fin-stat"><div class="lbl">إجمالي المبلغ</div><div class="val">${fmtMoney(totalAll)} ج</div></div>
-    <div class="fin-stat income"><div class="lbl">مجموع العربون</div><div class="val">${fmtMoney(depSum)} ج</div></div>
-    <div class="fin-stat remain"><div class="lbl">المتبقي تحصيله</div><div class="val">${fmtMoney(remSum)} ج</div></div>
-    <div class="fin-stat income"><div class="lbl">المبيعات (مستلم)</div><div class="val">${fmtMoney(salesSum)} ج</div></div>
-    <div class="fin-stat expense"><div class="lbl">مصروفات الشهر</div><div class="val">${fmtMoney(expSum)} ج</div></div>
+    <div class="fin-stat"><div class="lbl">مواعيد الفترة</div><div class="val">${apptCount}</div></div>
+    <div class="fin-stat income"><div class="lbl">عربون محصّل (شهر الدفع)</div><div class="val">${fmtMoney(depSum)} ج</div></div>
+    <div class="fin-stat income"><div class="lbl">متبقي محصّل (شهر التحصيل)</div><div class="val">${fmtMoney(remCollected)} ج</div></div>
+    <div class="fin-stat income"><div class="lbl">إجمالي الداخل</div><div class="val">${fmtMoney(income)} ج</div></div>
+    <div class="fin-stat remain"><div class="lbl">متبقي مواعيد الفترة</div><div class="val">${fmtMoney(remPending)} ج</div></div>
+    <div class="fin-stat expense"><div class="lbl">مصروفات الفترة</div><div class="val">${fmtMoney(expSum)} ج</div></div>
   `;
 
   const q=($("#finSearch").value||"").toLowerCase();
@@ -1553,15 +1608,16 @@ async function renderFinance(){
     const tr=document.createElement("tr");
     tr.innerHTML=`
       <td data-label="التاريخ">${b.d||b.date||"—"}</td>
-      <td data-label="الاسم"><strong>${b.name||"—"}</strong></td>
+      <td data-label="الاسم"><strong>${b.name||"—"}</strong>${b.notes?`<span class="note-pill">📝 ${String(b.notes).replace(/</g,"&lt;")}</span>`:""}</td>
       <td data-label="الهاتف"><a href="https://wa.me/2${b.phone}" target="_blank" style="color:var(--sage2)">💬 ${b.phone||"—"}</a></td>
       <td data-label="الباكدج">${b.service||"—"}</td>
       <td data-label="الإجمالي">${fmtMoney(b.total)} ج</td>
-      <td data-label="العربون">${fmtMoney(b.deposit)} ج</td>
-      <td data-label="المتبقي">${fmtMoney(b.remaining)} ج</td>
+      <td data-label="العربون">${fmtMoney(b.deposit)} ج${b.depositPaidOn?`<div style="font-size:11px;color:var(--muted)">دفع: ${b.depositPaidOn}</div>`:""}</td>
+      <td data-label="المتبقي">${fmtMoney(b.remaining)} ج${b.remainingPaidOn?`<div style="font-size:11px;color:var(--muted)">تحصيل: ${b.remainingPaidOn}</div>`:""}</td>
       <td data-label="الحالة"><span class="status-badge ${disp.key}">${disp.label}</span></td>
       <td class="fin-act">
-        ${canConfirm?`<button class="ok" data-fin="confirm" data-id="${b.id}">✅ استلام</button>`:""}
+        ${canConfirm?`<button class="ok" data-fin="confirm" data-id="${b.id}">✅ استلام العربون</button>`:""}
+        ${(disp.key==="received"||disp.key==="partial") && Number(b.remaining)>0?`<button class="ok" data-fin="collectRem" data-id="${b.id}">💵 تحصيل المتبقي</button>`:""}
         <button class="edit" data-fin="edit" data-id="${b.id}">✏️ تعديل</button>
         <button class="danger" data-fin="del" data-id="${b.id}" data-d="${b.d||b.date||""}" data-t="${b.time||""}">🗑️ حذف</button>
       </td>`;
@@ -1576,12 +1632,26 @@ document.addEventListener("click",async e=>{
   const btn=e.target.closest("[data-fin]");if(!btn)return;
   const id=btn.dataset.id;
   if(btn.dataset.fin==="confirm"){
-    store.finUpdate(id,{status:"received"});
-    // try FB update
+    const today=new Date().toISOString().slice(0,10);
+    const fields={status:"received",depositPaidOn:today};
+    store.finUpdate(id,fields);
     if(hasFirebase&&store.adminUnlocked&&store.fs){
-      try{const {doc,updateDoc}=store.fs;await updateDoc(doc(store.db,"bookings",id),{status:"received"})}catch{}
+      try{const {doc,updateDoc}=store.fs;await updateDoc(doc(store.db,"bookings",id),fields)}catch(e){console.warn(e)}
     }
-    toast("تم الاستلام — اتسجل في المبيعات ✅");
+    toast("تم استلام العربون — اتسجل في حسابات شهر "+today.slice(0,7)+" ✅");
+    renderFinance();
+  }else if(btn.dataset.fin==="collectRem"){
+    const today=new Date().toISOString().slice(0,10);
+    // load booking to get remaining
+    let rows=[];try{rows=await store.listFinancePool(new Date().getFullYear())}catch{try{rows=await store.listYear(new Date().getFullYear())}catch{}}
+    if(store.finGet) store.finGet().forEach(l=>{if(!rows.find(r=>r.id===l.id))rows.push(l)});
+    const b=rows.find(x=>x.id===id);if(!b)return;
+    const fields={remaining:0,remainingPaidOn:today,status:"paid"};
+    store.finUpdate(id,fields);
+    if(hasFirebase&&store.adminUnlocked&&store.fs){
+      try{const {doc,updateDoc}=store.fs;await updateDoc(doc(store.db,"bookings",id),fields)}catch(e){console.warn(e)}
+    }
+    toast("تم تحصيل المتبقي في حسابات "+today.slice(0,7)+" ✅");
     renderFinance();
   }else if(btn.dataset.fin==="del"){
     if(!confirm("حذف الحجز نهائيًا من الموقع؟"))return;
@@ -1600,6 +1670,9 @@ document.addEventListener("click",async e=>{
     $("#editTotal").value=b.total||0;
     $("#editDeposit").value=b.deposit||0;
     $("#editRemaining").value=b.remaining||0;
+    $("#editDepPaid").value=b.depositPaidOn||"";
+    $("#editRemPaid").value=b.remainingPaidOn||"";
+    $("#editNotes").value=b.notes||"";
     $("#editPanel").hidden=false;
   }else if(btn.dataset.fin==="cdel"){
     if(!confirm("حذف الحجز نهائيًا؟"))return;
@@ -1616,8 +1689,15 @@ $("#editSave").onclick=async()=>{
     phone:normalizePhone($("#editPhone").value)||$("#editPhone").value.trim(),
     total:Number($("#editTotal").value)||0,
     deposit:Number($("#editDeposit").value)||0,
-    remaining:Number($("#editRemaining").value)||0
+    remaining:Number($("#editRemaining").value)||0,
+    notes:($("#editNotes").value||"").trim().slice(0,500),
+    depositPaidOn:$("#editDepPaid").value||"",
+    remainingPaidOn:$("#editRemPaid").value||""
   };
+  if(fields.depositPaidOn && fields.status!=="pending"){/* keep */}
+  if(fields.depositPaidOn) fields.status="received";
+  if(fields.remainingPaidOn && Number(fields.remaining)===0) fields.status="paid";
+  else if(fields.remainingPaidOn) fields.status="partial";
   store.finUpdate(id,fields);
   if(hasFirebase&&store.adminUnlocked&&store.fs){
     try{const {doc,updateDoc}=store.fs;await updateDoc(doc(store.db,"bookings",id),fields)}catch{}
@@ -1626,6 +1706,14 @@ $("#editSave").onclick=async()=>{
   toast("تم التعديل ✅");
   renderFinance();
 };
+$("#editMarkRem").onclick=()=>{
+  const t=new Date().toISOString().slice(0,10);
+  $("#editRemPaid").value=t;
+  const rem=Number($("#editRemaining").value)||0;
+  if(rem>0){/* keep amount, just date — admin can set remaining to 0 if fully paid */}
+  toast("اتحدد تاريخ التحصيل: "+t+" — اضغطي حفظ");
+};
+
 
 /* Purchases */
 function renderPurchases(){
