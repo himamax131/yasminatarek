@@ -1223,9 +1223,13 @@ const store={
     // أي حجز العربون أو المتبقي اتدفع في السنة دي حتى لو الموعد سنة تانية
     if(this.finGet){
       this.finGet().forEach(r=>{
-        const dep=String(r.depositPaidOn||r.bookedOn||"");
-        const rem=String(r.remainingPaidOn||"");
-        if(dep.startsWith(String(y))||rem.startsWith(String(y))||String(r.d||"").startsWith(String(y))) map.set(r.id,r);
+        const prev=map.get(r.id);
+        if(prev) map.set(r.id, Object.assign({}, prev, r)); // local overrides (depositPaidOn etc)
+        else {
+          const dep=String(r.depositPaidOn||r.bookedOn||"");
+          const rem=String(r.remainingPaidOn||"");
+          if(dep.startsWith(String(y))||rem.startsWith(String(y))||String(r.d||"").startsWith(String(y))) map.set(r.id,r);
+        }
       });
     }
     return [...map.values()];
@@ -1285,8 +1289,13 @@ const store={
   finSave(list){const db=demo.get();db.finBookings=list;demo.set(db)},
   finUpdate(id,fields){
     const list=this.finGet();
-    const b=list.find(x=>x.id===id);
-    if(b){Object.assign(b,fields);if(fields.deposit!=null||fields.total!=null){b.remaining=Math.max(0,(b.total||0)-(b.deposit||0))}this.finSave(list)}
+    let b=list.find(x=>x.id===id);
+    if(!b){b={id};list.unshift(b)}
+    Object.assign(b,fields);
+    if(fields.deposit!=null||fields.total!=null){
+      b.remaining=Math.max(0,(Number(b.total)||0)-(Number(b.deposit)||0));
+    }
+    this.finSave(list);
   },
   purchasesGet(){return demo.get().purchases||[]},
   purchaseAdd(p){
@@ -1569,33 +1578,45 @@ async function renderFinance(){
   // صفوف ظاهرة: موعد في الفترة أو عربون/متبقي اتدفع في الفترة
   let rows=all.filter(b=>inPeriod(b.d)||inPeriod(b.depositPaidOn)||inPeriod(b.remainingPaidOn));
 
-  let depSum=0, remCollected=0, remPending=0, apptCount=0;
+  // —— إحصائيات الشهر ——
+  // إجمالي الباكدجات = مجموع أسعار مواعيد هذا الشهر
+  // العربون = يُضاف فقط في شهر تاريخ الاستلام (depositPaidOn)
+  // المتبقي لمواعيد الشهر = إجمالي مواعيد الشهر − عربوناتها المستلمة (حتى لو الاستلام كان شهر تاني)
+  let totalPkg=0, depSum=0, depOnAppts=0, apptCount=0;
+
   all.forEach(b=>{
-    if(inPeriod(b.d)) apptCount++;
-    // العربون في شهر الدفع
-    if(b.depositPaidOn && inPeriod(b.depositPaidOn)) depSum += Number(b.deposit)||0;
-    // المتبقي المحصّل = (الإجمالي - العربون - المتبقي الحالي) في شهر التحصيل
-    if(b.remainingPaidOn && inPeriod(b.remainingPaidOn)){
-      const total=Number(b.total)||0, dep=Number(b.deposit)||0, still=Number(b.remaining)||0;
-      remCollected += Math.max(0, total - dep - still);
+    const depAmt = Number(b.deposit)||0;
+    const received = !!(b.depositPaidOn) || b.status==="received" || b.status==="partial" || b.status==="paid";
+
+    // مواعيد هذا الشهر
+    if(inPeriod(b.d)){
+      apptCount++;
+      totalPkg += Number(b.total)||0;
+      // لو العربون اتستلم (أي شهر) ينقص من متبقي شهر الموعد
+      if(received) depOnAppts += depAmt;
     }
-    if(inPeriod(b.d)) remPending += Number(b.remaining)||0;
+
+    // العربون يظهر فقط في شهر تاريخ الاستلام المكتوب
+    if(b.depositPaidOn && inPeriod(b.depositPaidOn)){
+      depSum += depAmt;
+    }
   });
+
+  // المتبقي = إجمالي باكدجات مواعيد الشهر − عربونات تلك المواعيد المستلمة
+  const remaining = Math.max(0, totalPkg - depOnAppts);
 
   const purchases=store.purchasesGet?store.purchasesGet():[];
   const purF=purchases.filter(p=>inPeriod(p.date));
   const expSum=purF.reduce((s,p)=>s+(Number(p.paid)||Number(p.amount)||0),0);
 
   const monthLabel=finFilter.m?AR_MONTHS[finFilter.m-1]+" "+y:"سنة "+y;
-  const income=depSum+remCollected;
   $("#finStats").innerHTML=`
     <div class="fin-stat"><div class="lbl">الفترة</div><div class="val" style="font-size:14px">${monthLabel}</div></div>
-    <div class="fin-stat"><div class="lbl">مواعيد الفترة</div><div class="val">${apptCount}</div></div>
-    <div class="fin-stat income"><div class="lbl">عربون محصّل (شهر الدفع)</div><div class="val">${fmtMoney(depSum)} ج</div></div>
-    <div class="fin-stat income"><div class="lbl">متبقي محصّل (شهر التحصيل)</div><div class="val">${fmtMoney(remCollected)} ج</div></div>
-    <div class="fin-stat income"><div class="lbl">إجمالي الداخل</div><div class="val">${fmtMoney(income)} ج</div></div>
-    <div class="fin-stat remain"><div class="lbl">متبقي مواعيد الفترة</div><div class="val">${fmtMoney(remPending)} ج</div></div>
-    <div class="fin-stat expense"><div class="lbl">مصروفات الفترة</div><div class="val">${fmtMoney(expSum)} ج</div></div>
+    <div class="fin-stat"><div class="lbl">مواعيد الشهر</div><div class="val">${apptCount}</div></div>
+    <div class="fin-stat"><div class="lbl">إجمالي الباكدجات</div><div class="val">${fmtMoney(totalPkg)} ج</div></div>
+    <div class="fin-stat income"><div class="lbl">العربون (يُحسب في شهر الاستلام فقط)</div><div class="val">${fmtMoney(depSum)} ج</div></div>
+    <div class="fin-stat remain"><div class="lbl">المتبقي لمواعيد الشهر</div><div class="val">${fmtMoney(remaining)} ج</div></div>
+    <div class="fin-stat expense"><div class="lbl">مصروفات الشهر</div><div class="val">${fmtMoney(expSum)} ج</div></div>
   `;
 
   const q=($("#finSearch").value||"").toLowerCase();
