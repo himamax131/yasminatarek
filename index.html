@@ -546,7 +546,7 @@ img{max-width:100%;height:auto}
 
 /* mobile nav with more items */
 @media(max-width:640px){
-  .mob-nav a{min-width:52px;padding:6px 6px;font-size:9.5px}
+  .mob-nav a{min-width:48px;padding:6px 4px;font-size:9.5px;flex:1}
   .mob-nav .ico{font-size:18px}
   .topbar{align-items:center}
   .top-title{order:0;width:auto;flex:1;text-align:center;padding-top:0;font-size:15px;color:var(--sage2)}
@@ -802,7 +802,7 @@ img{max-width:100%;height:auto}
     <div class="side-sec">للجميع</div>
     <nav class="side-nav">
       <a class="side-link active" href="#" data-nav="book"><span class="ico">📅</span><span>حجز ميعاد جديد</span></a>
-      <a class="side-link" href="#" data-nav="booked"><span class="ico">🗓️</span><span>الأيام المحجوزة</span></a>
+      <a class="side-link locked" href="#" data-nav="booked" id="navBooked"><span class="ico">🗓️</span><span>الأيام المحجوزة</span><span class="lock">🔒</span></a>
       <a class="side-link" href="#" data-nav="home"><span class="ico">🏠</span><span>الصفحة الرئيسية</span></a>
     </nav>
     <div class="side-sec">لوحة الأدمن</div>
@@ -929,7 +929,7 @@ img{max-width:100%;height:auto}
 <nav class="mob-nav" id="mobNav" hidden>
   <a href="#" data-nav="home"><span class="ico">🏠</span>الرئيسية</a>
   <a href="#" data-nav="book" class="active"><span class="ico">📅</span>حجز</a>
-  <a href="#" data-nav="booked"><span class="ico">🗓️</span>المحجوز</a>
+  <a href="#" data-nav="booked" id="mobBooked"><span class="ico">🗓️</span>المحجوز</a>
   <!-- قبل الدخول: أدمن | بعد الدخول: الحسابات -->
   <a href="#" data-nav="adminLogin" id="mobAdminBtn"><span class="ico">👤</span><span id="mobAdminLabel">أدمن</span></a>
   <!-- يظهر فقط بعد الدخول -->
@@ -1473,11 +1473,12 @@ $$(".modal-overlay").forEach(m=>m.onclick=e=>{if(e.target===m)closeModal("#"+m.i
 
 function setAdminUI(on){
   store.adminUnlocked=on;
-  ["navClients","navFinance"].forEach(id=>{
+  ["navClients","navFinance","navBooked"].forEach(id=>{
     const el=$("#"+id);if(!el)return;
     el.classList.toggle("locked",!on);
     const lock=el.querySelector(".lock");if(lock)lock.textContent=on?"":"🔒";
   });
+  // mobBooked always visible next to حجز; opens only for admin
   $("#guestPill").innerHTML=on
     ?'<span class="dot" style="background:var(--success)"></span> أدمن'
     :'<span class="dot"></span> غير مسجل دخول';
@@ -1491,6 +1492,13 @@ function setAdminUI(on){
   if(lab) lab.textContent = on ? "الحسابات" : "أدمن";
   if(btn) btn.setAttribute("data-nav", on ? "finance" : "adminLogin");
   if(out) out.hidden = !on;
+  const mb=$("#mobBooked");
+  if(mb){
+    mb.hidden=false;
+    mb.innerHTML = on
+      ? '<span class="ico">🗓️</span>المحجوز'
+      : '<span class="ico">🗓️</span>المحجوز';
+  }
 }
 
 document.addEventListener("click",e=>{
@@ -1499,7 +1507,10 @@ document.addEventListener("click",e=>{
   const a=nav.dataset.nav;
   if(a==="home"){showHome();return}
   if(a==="book"){showApp();return}
-  if(a==="booked"){renderBookedDays();openModal("#bookedModal");return}
+  if(a==="booked"){
+    if(!store.adminUnlocked){toast("الأيام المحجوزة للأدمن فقط",true);openModal("#adminModal");return}
+    renderBookedDays();openModal("#bookedModal");return
+  }
   if(a==="adminLogin"){
     openModal("#adminModal");return;
   }
@@ -1625,9 +1636,11 @@ async function renderFinance(){
     <div class="fin-stat"><div class="lbl">إجمالي الباكدجات</div><div class="val">${fmtMoney(totalPkg)} ج</div></div>
     <div class="fin-stat income"><div class="lbl">العربون (شهر الاستلام)</div><div class="val">${fmtMoney(depSum)} ج</div></div>
     <div class="fin-stat remain"><div class="lbl">المتبقي لمواعيد الشهر</div><div class="val">${fmtMoney(remaining)} ج</div></div>
-    <div class="fin-stat expense"><div class="lbl">المشتريات (مصروفات الشهر)</div><div class="val">${fmtMoney(purchasesSum)} ج</div></div>
-    <div class="fin-stat ${treClass}"><div class="lbl">صافي الخزينة</div><div class="val">${fmtMoney(treasury)} ج</div>
-      <div style="font-size:10px;color:var(--muted);margin-top:4px">عربون − مشتريات</div>
+    <div class="fin-stat expense"><div class="lbl">مصروفات الشهر (المشتريات)</div><div class="val">${fmtMoney(purchasesSum)} ج</div></div>
+    <div class="fin-stat ${treClass}" style="border:2px solid ${treasury>=0?'var(--success)':'var(--danger)'};grid-column:span 1">
+      <div class="lbl">صافي الخزينة الفعلية</div>
+      <div class="val">${fmtMoney(treasury)} ج</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;font-weight:600">العربون − مصروفات الشهر</div>
     </div>
   `;
 
@@ -1785,6 +1798,8 @@ $("#addPurForm").onsubmit=e=>{
   $("#purMsg").textContent="تم حفظ المشتريات ✅";
   setTimeout(()=>$("#purMsg").textContent="",2500);
   toast("تمت إضافة المشتريات");
+  renderPurchases();
+  renderFinance();
 };
 
 /* Clients */
