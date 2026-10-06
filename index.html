@@ -1606,17 +1606,29 @@ async function renderFinance(){
   const remaining = Math.max(0, totalPkg - depOnAppts);
 
   const purchases=store.purchasesGet?store.purchasesGet():[];
+  // المشتريات = مجموع مبالغ المشتريات في الفترة (paid إن وُجد وإلا amount)
   const purF=purchases.filter(p=>inPeriod(p.date));
-  const expSum=purF.reduce((s,p)=>s+(Number(p.paid)||Number(p.amount)||0),0);
+  const purchasesSum=purF.reduce((s,p)=>{
+    const paid=Number(p.paid); const amt=Number(p.amount);
+    if(!isNaN(paid) && paid>0) return s+paid;
+    return s+(isNaN(amt)?0:amt);
+  },0);
+
+  // الخزينة الفعلية = العربون − المشتريات
+  const treasury = depSum - purchasesSum;
 
   const monthLabel=finFilter.m?AR_MONTHS[finFilter.m-1]+" "+y:"سنة "+y;
+  const treClass = treasury>=0 ? "income" : "expense";
   $("#finStats").innerHTML=`
     <div class="fin-stat"><div class="lbl">الفترة</div><div class="val" style="font-size:14px">${monthLabel}</div></div>
     <div class="fin-stat"><div class="lbl">مواعيد الشهر</div><div class="val">${apptCount}</div></div>
     <div class="fin-stat"><div class="lbl">إجمالي الباكدجات</div><div class="val">${fmtMoney(totalPkg)} ج</div></div>
-    <div class="fin-stat income"><div class="lbl">العربون (يُحسب في شهر الاستلام فقط)</div><div class="val">${fmtMoney(depSum)} ج</div></div>
+    <div class="fin-stat income"><div class="lbl">العربون (شهر الاستلام)</div><div class="val">${fmtMoney(depSum)} ج</div></div>
     <div class="fin-stat remain"><div class="lbl">المتبقي لمواعيد الشهر</div><div class="val">${fmtMoney(remaining)} ج</div></div>
-    <div class="fin-stat expense"><div class="lbl">مصروفات الشهر</div><div class="val">${fmtMoney(expSum)} ج</div></div>
+    <div class="fin-stat expense"><div class="lbl">المشتريات (مصروفات الشهر)</div><div class="val">${fmtMoney(purchasesSum)} ج</div></div>
+    <div class="fin-stat ${treClass}"><div class="lbl">صافي الخزينة</div><div class="val">${fmtMoney(treasury)} ج</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:4px">عربون − مشتريات</div>
+    </div>
   `;
 
   const q=($("#finSearch").value||"").toLowerCase();
