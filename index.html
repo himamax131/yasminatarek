@@ -190,6 +190,29 @@ a{color:inherit;text-decoration:none}
 .side-link.active{background:rgba(201,123,147,.3);color:var(--sage-l);font-weight:700;box-shadow:inset 3px 0 0 var(--sage-l)}
 .side-link.locked{opacity:.4}
 .side-link .lock{margin-inline-start:auto;font-size:11px}
+.day-closed-banner{
+  display:none;margin:10px 0 14px;padding:12px 14px;border-radius:12px;
+  background:#FFF0F2;border:1px solid #E8A8B7;color:#8F304C;
+  font-size:13px;font-weight:700;line-height:1.6;
+}
+.day-closed-banner.show{display:flex;align-items:flex-start;gap:8px}
+.closed-days-list{display:grid;gap:8px;margin-top:14px}
+.closed-day-row{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--mint3);
+}
+.closed-day-row .cd-date{font-weight:800;color:var(--sage2)}
+.closed-day-row .cd-note{font-size:11px;color:var(--muted);margin-top:2px}
+.closed-empty{padding:18px;text-align:center;color:var(--muted);background:var(--mint3);border-radius:11px}
+.closed-add{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}
+.closed-add label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:5px}
+.closed-add input{height:42px;padding:0 10px;border:1.5px solid var(--line);border-radius:10px;background:#fff;width:100%}
+@media(max-width:640px){
+  .mob-nav a{min-width:52px;padding-inline:5px}
+  .closed-add{grid-template-columns:1fr}
+  .closed-add .btn-gold{width:100%;justify-content:center}
+}
+
 .side-footer{margin-top:auto;padding:14px;font-size:11px;color:rgba(232,180,196,.35);text-align:center;border-top:1px solid rgba(255,255,255,.06)}
 .main{flex:1;margin-right:250px;min-height:100vh;background:linear-gradient(160deg,var(--mint3),var(--mint));display:flex;flex-direction:column}
 .topbar{
@@ -809,6 +832,7 @@ img{max-width:100%;height:auto}
     <nav class="side-nav">
       <a class="side-link locked" href="#" data-nav="clients" id="navClients"><span class="ico">🕐</span><span>مواعيد العملاء</span><span class="lock">🔒</span></a>
       <a class="side-link locked" href="#" data-nav="finance" id="navFinance"><span class="ico">💰</span><span>الحسابات والماليات</span><span class="lock">🔒</span></a>
+      <a class="side-link locked" href="#" data-nav="closedDays" id="navClosedDays"><span class="ico">🚫</span><span>الأيام المغلقة</span><span class="lock">🔒</span></a>
       <a class="side-link" href="#" data-nav="adminLogin" id="navAdminLogin"><span class="ico">👤</span><span>تسجيل دخول الأدمن</span></a>
     </nav>
     <div class="side-footer">© Yasmina Tarek</div>
@@ -866,6 +890,9 @@ img{max-width:100%;height:auto}
                 <label>📅 تاريخ الحجز</label>
                 <input id="date" type="date" required>
                 <div class="err" id="errDate"></div>
+                <div class="day-closed-banner" id="closedDayBanner" role="alert">
+                  <span>🚫</span><span id="closedDayBannerText">هذا اليوم مكتمل الحجوزات وغير متاح للحجز.</span>
+                </div>
               </div>
               <div class="field">
                 <label>🕐 وقت الموعد</label>
@@ -932,9 +959,31 @@ img{max-width:100%;height:auto}
   <a href="#" data-nav="booked" id="mobBooked"><span class="ico">🗓️</span>المحجوز</a>
   <!-- قبل الدخول: أدمن | بعد الدخول: الحسابات -->
   <a href="#" data-nav="adminLogin" id="mobAdminBtn"><span class="ico">👤</span><span id="mobAdminLabel">أدمن</span></a>
+  <a href="#" data-nav="closedDays" id="mobClosedDays" hidden><span class="ico">🚫</span><span>الأيام</span></a>
   <!-- يظهر فقط بعد الدخول -->
   <a href="#" data-nav="logout" id="mobLogoutBtn" hidden><span class="ico">🚪</span>خروج</a>
 </nav>
+
+<!-- Closed Days Modal -->
+<div class="modal-overlay" id="closedDaysModal" hidden>
+  <div class="modal-box" style="max-width:520px">
+    <div class="modal-head"><h2>🚫 إدارة الأيام المغلقة</h2><button class="modal-close" data-close="closedDaysModal">✕</button></div>
+    <div class="modal-body">
+      <p style="margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.7">
+        اختاري أي يوم يكون عندك فيه شغل كامل. اليوم سيظهر للعميلة كمغلق ولن يسمح النظام بحجز أي موعد فيه.
+      </p>
+      <div class="closed-add">
+        <div>
+          <label for="closedDate">اليوم المراد إغلاقه</label>
+          <input id="closedDate" type="date">
+        </div>
+        <button type="button" class="btn-gold" id="addClosedDay">🚫 إغلاق اليوم</button>
+      </div>
+      <p class="err" id="closedDayErr"></p>
+      <div class="closed-days-list" id="closedDaysList"></div>
+    </div>
+  </div>
+</div>
 
 <!-- Admin Login -->
 <div class="modal-overlay" id="adminModal" hidden>
@@ -1176,14 +1225,14 @@ function toast(text,bad){
 const hasFirebase=!!(CONFIG.firebase.apiKey&&CONFIG.firebase.projectId);
 const FB="https://www.gstatic.com/firebasejs/10.12.2/";
 const demo={
-  get(){try{return JSON.parse(localStorage.getItem("yasmina_v2")||"null")||{slots:{},bookings:{},finBookings:[],purchases:[]}}catch{return{slots:{},bookings:{},finBookings:[],purchases:[]}}},
+  get(){try{return JSON.parse(localStorage.getItem("yasmina_v2")||"null")||{slots:{},bookings:{},finBookings:[],purchases:[],closedDays:{}}}catch{return{slots:{},bookings:{},finBookings:[],purchases:[],closedDays:{}}}},
   set(v){try{localStorage.setItem("yasmina_v2",JSON.stringify(v))}catch{}},
   map(){return new Map(Object.entries(this.get().slots))}
 };
 const taken=()=>Object.assign(new Error("taken"),{taken:true});
 
 const store={
-  booked:new Map(), adminUnlocked:false,
+  booked:new Map(), closedDays:new Set(), adminUnlocked:false,
   async start(onChange){
     if(hasFirebase){
       const [{initializeApp},fs]=await Promise.all([import(FB+"firebase-app.js"),import(FB+"firebase-firestore.js")]);
@@ -1191,8 +1240,18 @@ const store={
       import(FB+"firebase-auth.js").then(m=>{this.am=m;this.auth=m.getAuth(this.app)}).catch(()=>{});
       const q=fs.query(fs.collection(this.db,"slots"),fs.where("d",">=",minKey));
       fs.onSnapshot(q,s=>{this.booked=new Map(s.docs.map(d=>[d.id,d.data().bid||""]));onChange(this.booked);updateAvail()},()=>{});
+      const cq=fs.collection(this.db,"closedDays");
+      fs.onSnapshot(cq,s=>{
+        this.closedDays=new Set(s.docs.map(d=>d.id));
+        refreshClosedDayUI();
+        renderClosedDays();
+        updateAvail();
+      },()=>{});
     }else{
-      $("#demoBar").hidden=false;this.booked=demo.map();onChange(this.booked);updateAvail();
+      $("#demoBar").hidden=false;
+      this.booked=demo.map();
+      this.closedDays=new Set(Object.keys(demo.get().closedDays||{}));
+      onChange(this.booked);refreshClosedDayUI();renderClosedDays();updateAvail();
     }
   },
   async adminIn(){
@@ -1234,8 +1293,40 @@ const store={
     }
     return [...map.values()];
   },
+  async listClosedDays(){
+    if(hasFirebase && this.adminUnlocked && this.fs){
+      try{
+        const {collection,getDocs,query,orderBy}=this.fs;
+        const s=await getDocs(query(collection(this.db,"closedDays"),orderBy("d")));
+        return s.docs.map(d=>({id:d.id,...d.data()}));
+      }catch(e){console.warn("closed days",e)}
+    }
+    return Object.entries(demo.get().closedDays||{}).map(([id,v])=>({id,d:id,...v})).sort((a,b)=>String(a.d).localeCompare(String(b.d)));
+  },
+  async addClosedDay(d){
+    if(!d) throw new Error("DATE");
+    if(hasFirebase && this.adminUnlocked && this.fs){
+      const {doc,setDoc,serverTimestamp}=this.fs;
+      await setDoc(doc(this.db,"closedDays",d),{d,reason:"مغلق بواسطة الأدمن",at:serverTimestamp()});
+    }else{
+      const db=demo.get();db.closedDays=db.closedDays||{};db.closedDays[d]={reason:"مغلق بواسطة الأدمن",at:Date.now()};demo.set(db);
+      this.closedDays=new Set(Object.keys(db.closedDays));
+      refreshClosedDayUI();renderClosedDays();updateAvail();
+    }
+  },
+  async removeClosedDay(d){
+    if(hasFirebase && this.adminUnlocked && this.fs){
+      const {doc,deleteDoc}=this.fs;
+      await deleteDoc(doc(this.db,"closedDays",d));
+    }else{
+      const db=demo.get();if(db.closedDays)delete db.closedDays[d];demo.set(db);
+      this.closedDays=new Set(Object.keys(db.closedDays||{}));
+      refreshClosedDayUI();renderClosedDays();updateAvail();
+    }
+  },
   async book(b){
     const id=slotId(b.d,b.time),h=b.time.replace(":","");
+    if(this.closedDays.has(b.d)) throw Object.assign(new Error("closed"),{closed:true});
     const pay=`Vodafone Cash ${CONFIG.payments.vodafone} | InstaPay ${CONFIG.payments.instapay}`;
     const total=Number(CONFIG.packagePrices[b.service])||0;
     const deposit=200, remaining=Math.max(0,total-deposit), status="pending";
@@ -1314,6 +1405,7 @@ function updateAvail(){
   for(let i=0;i<7;i++){
     const d=new Date(today0);d.setDate(d.getDate()+i);
     const k=dateKey(d);
+    if(store.closedDays.has(k)) return;
     CONFIG.slotTimes.forEach(hm=>{
       const id=slotId(k,hm);
       if(store.booked.has(id))return;
@@ -1388,6 +1480,7 @@ function fillDateLimits(){$("#date").min=minKey;$("#date").max=maxKey}
 function fillTimes(dateStr){
   const sel=$("#timeSelect");sel.innerHTML='<option value="">— اختاري الوقت —</option>';
   if(!dateStr)return;
+  if(store.closedDays.has(dateStr)) return;
   const d=new Date(dateStr+"T12:00:00");
   CONFIG.slotTimes.forEach(hm=>{
     const id=slotId(dateStr,hm);
@@ -1415,8 +1508,42 @@ function updateSummary(){
     if(sr) sr.textContent="—";
   }else $("#sumBar").hidden=true;
 }
+function isClosedDay(d){return !!d && store.closedDays.has(d)}
+function formatDateAr(d){
+  if(!d)return "";
+  const x=new Date(d+"T12:00:00");
+  return x.toLocaleDateString("ar-EG",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+}
+function refreshClosedDayUI(){
+  const d=$("#date")?.value, closed=isClosedDay(d);
+  const banner=$("#closedDayBanner");
+  if(banner){
+    banner.classList.toggle("show",closed);
+    const t=$("#closedDayBannerText");
+    if(t)t.textContent=closed ? `يوم ${formatDateAr(d)} مكتمل الحجوزات وغير متاح للحجز. اختاري يومًا آخر.` : "";
+  }
+  const err=$("#errDate");
+  if(err && closed)err.textContent="هذا اليوم مغلق من الأدمن — اختاري يومًا آخر.";
+  const time=$("#timeSelect");
+  if(time && closed){time.value="";time.disabled=true}
+  else if(time)time.disabled=false;
+  const btn=$("#submitBtn");
+  if(btn)btn.disabled=closed;
+}
+async function renderClosedDays(){
+  const box=$("#closedDaysList");if(!box)return;
+  const rows=await store.listClosedDays();
+  box.innerHTML="";
+  const future=rows.filter(r=>String(r.d)>=minKey);
+  if(!future.length){box.innerHTML='<div class="closed-empty">لا توجد أيام مغلقة حاليًا.</div>';return}
+  future.forEach(r=>{
+    const row=document.createElement("div");row.className="closed-day-row";
+    row.innerHTML=`<div><div class="cd-date">${formatDateAr(r.d)}</div><div class="cd-note">${r.d}</div></div><button type="button" class="btn-outline" data-remove-closed="${r.d}">فتح اليوم</button>`;
+    box.append(row);
+  });
+}
 $("#service").onchange=updateSummary;
-$("#date").onchange=e=>{fillTimes(e.target.value);updateSummary()};
+$("#date").onchange=e=>{refreshClosedDayUI();fillTimes(e.target.value);updateSummary()};
 $("#timeSelect").onchange=updateSummary;
 $("#locationType").onchange=()=>{
   const home=$("#locationType").value==="عنوان منزل";
@@ -1435,7 +1562,8 @@ $("#bookForm").onsubmit=async e=>{
   if(!phone){$("#errPhone").textContent="رقم صحيح";bad=true}
   if(!service){$("#errService").textContent="اختاري باكدج";bad=true}
   if(!d){$("#errDate").textContent="اختاري تاريخ";bad=true}
-  if(!time){$("#errTime").textContent="اختاري وقت";bad=true}
+  if(d&&isClosedDay(d)){refreshClosedDayUI();bad=true}
+  if(!time&&!isClosedDay(d)){$("#errTime").textContent="اختاري وقت";bad=true}
   if(locationType==="عنوان منزل"&&address.length<8){$("#errAddress").textContent="اكتبي العنوان";bad=true}
   if(bad)return;
   const btn=$("#submitBtn");btn.disabled=true;btn.textContent="جاري الحجز...";
@@ -1473,7 +1601,7 @@ $$(".modal-overlay").forEach(m=>m.onclick=e=>{if(e.target===m)closeModal("#"+m.i
 
 function setAdminUI(on){
   store.adminUnlocked=on;
-  ["navClients","navFinance","navBooked"].forEach(id=>{
+  ["navClients","navFinance","navBooked","navClosedDays"].forEach(id=>{
     const el=$("#"+id);if(!el)return;
     el.classList.toggle("locked",!on);
     const lock=el.querySelector(".lock");if(lock)lock.textContent=on?"":"🔒";
@@ -1492,6 +1620,7 @@ function setAdminUI(on){
   if(lab) lab.textContent = on ? "الحسابات" : "أدمن";
   if(btn) btn.setAttribute("data-nav", on ? "finance" : "adminLogin");
   if(out) out.hidden = !on;
+  const mcd=$("#mobClosedDays"); if(mcd) mcd.hidden=!on;
   const mb=$("#mobBooked");
   if(mb){
     mb.hidden=false;
@@ -1523,11 +1652,36 @@ document.addEventListener("click",e=>{
     if(!store.adminUnlocked){toast("سجّلي دخول الأدمن أولاً",true);openModal("#adminModal");return}
     renderFinance();openModal("#financeModal");return;
   }
+  if(a==="closedDays"){
+    if(!store.adminUnlocked){toast("سجّلي دخول الأدمن أولاً",true);openModal("#adminModal");return}
+    $("#closedDate").min=minKey;$("#closedDate").max=maxKey;
+    renderClosedDays();openModal("#closedDaysModal");return;
+  }
   if(a==="clients"){
     if(!store.adminUnlocked){toast("سجّلي دخول الأدمن أولاً",true);openModal("#adminModal");return}
     renderClients();openModal("#clientsModal");return;
   }
 });
+
+$("#addClosedDay").onclick=async()=>{
+  const input=$("#closedDate"),err=$("#closedDayErr"),d=input.value;
+  err.textContent="";
+  if(!d){err.textContent="اختاري اليوم أولاً.";return}
+  if(d<minKey||d>maxKey){err.textContent="اختاري يومًا داخل الفترة المتاحة للحجز.";return}
+  if(isClosedDay(d)){err.textContent="اليوم مغلق بالفعل.";return}
+  const btn=$("#addClosedDay");btn.disabled=true;
+  try{await store.addClosedDay(d);input.value="";renderClosedDays();toast("تم إغلاق اليوم أمام الحجوزات ✅");}
+  catch(e){console.warn(e);err.textContent="تعذر حفظ اليوم. حاولي مرة أخرى."}
+  finally{btn.disabled=false}
+};
+$("#closedDaysList").onclick=async e=>{
+  const b=e.target.closest("[data-remove-closed]");if(!b)return;
+  const d=b.dataset.removeClosed;
+  if(!confirm(`فتح ${formatDateAr(d)} والسماح بالحجز فيه؟`))return;
+  b.disabled=true;
+  try{await store.removeClosedDay(d);renderClosedDays();toast("تم فتح اليوم للحجز ✅");}
+  catch(e){console.warn(e);toast("تعذر فتح اليوم",true)}
+};
 
 $("#adminLoginForm").onsubmit=async e=>{
   e.preventDefault();
