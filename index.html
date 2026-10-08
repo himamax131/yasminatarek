@@ -1762,9 +1762,16 @@ async function renderFinance(){
       remainingSum += Math.max(0, Number(b.remaining)||0);
     }
 
-    // العربون يظهر فقط في شهر تاريخ الاستلام المكتوب
+    // العربون + أي متبقي تم تحصيله يظهران في التحصيلات بنفس شهر الدفع.
     if(b.depositPaidOn && inPeriod(b.depositPaidOn)){
       depSum += depAmt;
+    }
+    if(b.remainingPaidOn && inPeriod(b.remainingPaidOn)){
+      // المبلغ المسجل وقت التحصيل، مع fallback للحجوزات القديمة.
+      const remCollected = Number(b.remainingCollected);
+      depSum += (!isNaN(remCollected) && remCollected > 0)
+        ? remCollected
+        : Math.max(0, (Number(b.total)||0) - depAmt);
     }
   });
 
@@ -1789,13 +1796,13 @@ async function renderFinance(){
     <div class="fin-stat"><div class="lbl">الفترة</div><div class="val" style="font-size:14px">${monthLabel}</div></div>
     <div class="fin-stat"><div class="lbl">مواعيد الشهر</div><div class="val">${apptCount}</div></div>
     <div class="fin-stat"><div class="lbl">إجمالي الباكدجات</div><div class="val">${fmtMoney(totalPkg)} ج</div></div>
-    <div class="fin-stat income"><div class="lbl">العربون (شهر الاستلام)</div><div class="val">${fmtMoney(depSum)} ج</div></div>
+    <div class="fin-stat income"><div class="lbl">التحصيلات (العربون + المتبقي)</div><div class="val">${fmtMoney(depSum)} ج</div></div>
     <div class="fin-stat remain"><div class="lbl">المتبقي لمواعيد الشهر</div><div class="val">${fmtMoney(remaining)} ج</div></div>
     <div class="fin-stat expense"><div class="lbl">مصروفات الشهر (المشتريات)</div><div class="val">${fmtMoney(purchasesSum)} ج</div></div>
     <div class="fin-stat ${treClass}" style="border:2px solid ${treasury>=0?'var(--success)':'var(--danger)'};grid-column:span 1">
       <div class="lbl">صافي الخزينة الفعلية</div>
       <div class="val">${fmtMoney(treasury)} ج</div>
-      <div style="font-size:11px;color:var(--muted);margin-top:4px;font-weight:600">العربون − مصروفات الشهر</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;font-weight:600">إجمالي التحصيلات − مصروفات الشهر</div>
     </div>
   `;
 
@@ -1852,7 +1859,7 @@ document.addEventListener("click",async e=>{
       toast("المتبقي لهذا الحجز تم تحصيله بالفعل ✅");
       return;
     }
-    const fields={remaining:0,remainingPaidOn:today,status:"paid"};
+    const fields={remaining:0,remainingPaidOn:today,remainingCollected:currentRemaining,status:"paid"};
     // حدّث Firebase أولًا، ثم الذاكرة المحلية، حتى لا يرجع الرقم القديم بعد إعادة الرسم.
     if(hasFirebase&&store.adminUnlocked&&store.fs){
       try{
