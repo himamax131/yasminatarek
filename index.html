@@ -1746,8 +1746,9 @@ async function renderFinance(){
   // —— إحصائيات الشهر ——
   // إجمالي الباكدجات = مجموع أسعار مواعيد هذا الشهر
   // العربون = يُضاف فقط في شهر تاريخ الاستلام (depositPaidOn)
-  // المتبقي لمواعيد الشهر = إجمالي مواعيد الشهر − عربوناتها المستلمة (حتى لو الاستلام كان شهر تاني)
-  let totalPkg=0, depSum=0, depOnAppts=0, apptCount=0;
+  // المتبقي لمواعيد الشهر = مجموع المتبقي الفعلي لكل موعد في الشهر
+  // لذلك عند الضغط على "تحصيل المتبقي" تصبح قيمة الحجز 0 وينخفض الإجمالي فورًا.
+  let totalPkg=0, depSum=0, remainingSum=0, apptCount=0;
 
   all.forEach(b=>{
     const depAmt = Number(b.deposit)||0;
@@ -1757,8 +1758,8 @@ async function renderFinance(){
     if(inPeriod(b.d)){
       apptCount++;
       totalPkg += Number(b.total)||0;
-      // لو العربون اتستلم (أي شهر) ينقص من متبقي شهر الموعد
-      if(received) depOnAppts += depAmt;
+      // المتبقي الحالي للحجز؛ لو تم تحصيله يصبح 0
+      remainingSum += Math.max(0, Number(b.remaining)||0);
     }
 
     // العربون يظهر فقط في شهر تاريخ الاستلام المكتوب
@@ -1767,8 +1768,8 @@ async function renderFinance(){
     }
   });
 
-  // المتبقي = إجمالي باكدجات مواعيد الشهر − عربونات تلك المواعيد المستلمة
-  const remaining = Math.max(0, totalPkg - depOnAppts);
+  // المتبقي = مجموع المتبقي الحالي للحجوزات، وليس إجمالي الباكدجات ناقص العربون
+  const remaining = Math.max(0, remainingSum);
 
   const purchases=store.purchasesGet?store.purchasesGet():[];
   // المشتريات = مجموع مبالغ المشتريات في الفترة (paid إن وُجد وإلا amount)
@@ -1846,13 +1847,26 @@ document.addEventListener("click",async e=>{
     let rows=[];try{rows=await store.listFinancePool(new Date().getFullYear())}catch{try{rows=await store.listYear(new Date().getFullYear())}catch{}}
     if(store.finGet) store.finGet().forEach(l=>{if(!rows.find(r=>r.id===l.id))rows.push(l)});
     const b=rows.find(x=>x.id===id);if(!b)return;
-    const fields={remaining:0,remainingPaidOn:today,status:"paid"};
-    store.finUpdate(id,fields);
-    if(hasFirebase&&store.adminUnlocked&&store.fs){
-      try{const {doc,updateDoc}=store.fs;await updateDoc(doc(store.db,"bookings",id),fields)}catch(e){console.warn(e)}
+    const currentRemaining=Math.max(0,Number(b.remaining)||0);
+    if(currentRemaining<=0){
+      toast("المتبقي لهذا الحجز تم تحصيله بالفعل ✅");
+      return;
     }
-    toast("تم تحصيل المتبقي في حسابات "+today.slice(0,7)+" ✅");
-    renderFinance();
+    const fields={remaining:0,remainingPaidOn:today,status:"paid"};
+    // حدّث Firebase أولًا، ثم الذاكرة المحلية، حتى لا يرجع الرقم القديم بعد إعادة الرسم.
+    if(hasFirebase&&store.adminUnlocked&&store.fs){
+      try{
+        const {doc,updateDoc}=store.fs;
+        await updateDoc(doc(store.db,"bookings",id),fields);
+      }catch(e){
+        console.error("FB collect remaining",e);
+        toast("تعذر تسجيل تحصيل المتبقي، حاولي مرة أخرى");
+        return;
+      }
+    }
+    store.finUpdate(id,fields);
+    toast("تم تحصيل المتبقي "+fmtMoney(currentRemaining)+" ج — والمتبقي الآن 0 ج ✅");
+    await renderFinance();
   }else if(btn.dataset.fin==="del"){
     if(!confirm("حذف الحجز نهائيًا من الموقع؟"))return;
     await store.deleteBooking(id, btn.dataset.d, btn.dataset.t);
